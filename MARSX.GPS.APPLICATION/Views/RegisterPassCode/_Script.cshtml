@@ -1,0 +1,306 @@
+﻿<script type="text/javascript">
+
+    var passcodeStep1 = null;
+    var passcodeStep2 = null;
+
+    $(document).ready(function () {
+
+        getClientIp();
+
+        sessionStorage.setItem('currentLanguage', 'en');
+
+        const currentSignIn = sessionStorage.getItem('lastUsername');
+
+        $('#passCodeAccount').text(currentSignIn);
+
+        if (currentSignIn == null || currentSignIn == '') {
+            redirectToPage("SignIn");
+        }
+
+    })
+
+
+    function redirectToSignIn() {
+
+        sessionStorage.setItem('lastUsername', '');
+
+        window.location.href = '@Url.Content("~/")' + "SignIn";
+    }
+
+
+    function assignPassCodeValue(param) {
+
+        var getCurrentPassCode1 = $('#inputPassCode1').val();
+        var getCurrentPassCode2 = $('#inputPassCode2').val();
+        var getCurrentPassCode3 = $('#inputPassCode3').val();
+        var getCurrentPassCode4 = $('#inputPassCode4').val();
+        var getCurrentPassCode5 = $('#inputPassCode5').val();
+        var getCurrentPassCode6 = $('#inputPassCode6').val();
+
+        if (param != "D" && param != "#") {
+
+            if (getCurrentPassCode1 == "" || getCurrentPassCode1 == null) {
+                $('#inputPassCode1').val(param)
+            }
+            else if (getCurrentPassCode2 == "" || getCurrentPassCode2 == null) {
+                $('#inputPassCode2').val(param)
+            }
+            else if (getCurrentPassCode3 == "" || getCurrentPassCode3 == null) {
+                $('#inputPassCode3').val(param)
+            }
+            else if (getCurrentPassCode4 == "" || getCurrentPassCode4 == null) {
+                $('#inputPassCode4').val(param)
+            }
+            else if (getCurrentPassCode5 == "" || getCurrentPassCode5 == null) {
+                $('#inputPassCode5').val(param)
+            }
+            else if (getCurrentPassCode6 == "" || getCurrentPassCode6 == null) {
+                $('#inputPassCode6').val(param)
+            }
+
+        }
+        else if (param == "D") {
+
+            if (getCurrentPassCode6 == "" || getCurrentPassCode6 == null) {
+                if (getCurrentPassCode5 == "" || getCurrentPassCode5 == null) {
+                    if (getCurrentPassCode4 == "" || getCurrentPassCode4 == null) {
+                        if (getCurrentPassCode3 == "" || getCurrentPassCode3 == null) {
+                            if (getCurrentPassCode2 == "" || getCurrentPassCode2 == null) {
+                                if (getCurrentPassCode1 == "" || getCurrentPassCode1 == null) {
+
+                                }
+                                else {
+                                    $('#inputPassCode1').val("")
+                                }
+                            }
+                            else {
+                                $('#inputPassCode2').val("")
+                            }
+                        }
+                        else {
+                            $('#inputPassCode3').val("")
+                        }
+                    }
+                    else {
+                        $('#inputPassCode4').val("")
+                    }
+                }
+                else {
+                    $('#inputPassCode5').val("")
+                }
+            }
+            else {
+                $('#inputPassCode6').val("")
+            }
+        }
+
+        else if (param == "#") {
+            $('#inputPassCode6').val("");
+            $('#inputPassCode5').val("");
+            $('#inputPassCode4').val("");
+            $('#inputPassCode3').val("");
+            $('#inputPassCode2').val("");
+            $('#inputPassCode1').val("");
+        }
+
+        var getPassCode = $('#inputPassCode1').val() + $('#inputPassCode2').val() + $('#inputPassCode3').val() + $('#inputPassCode4').val() + $('#inputPassCode5').val() + $('#inputPassCode6').val();
+
+
+        if (getPassCode.length == 6) {
+
+            if (passcodeStep1 == null) {
+
+                passcodeStep1 = getPassCode;
+
+                getPassCode = null;
+            }
+
+
+            if (passcodeStep1 != null && getPassCode != null) {
+
+                passcodeStep2 = getPassCode;
+
+                if (passcodeStep2 != null) {
+
+                    if (passcodeStep1 == passcodeStep2) {
+                        createWithPassCode();
+                    }
+                    else {
+                        fnBlockScreenWarning("Faild", "Passcode do not match")
+                    }
+                }
+            }
+
+            $('#lb-header-text').text("CONFIRM YOUR PASSCODE")
+            $('#text-step-passcode').text("[ 2 / 2 ]")
+
+            $('#inputPassCode6').val("");
+            $('#inputPassCode5').val("");
+            $('#inputPassCode4').val("");
+            $('#inputPassCode3').val("");
+            $('#inputPassCode2').val("");
+            $('#inputPassCode1').val("");
+
+            $('#back-to-previous').removeClass('d-none');
+
+            $('#lb-header-text').removeClass('header-text');
+            $('#lb-header-text').addClass('header-text-confirm');
+        }
+
+
+    }
+
+    function backToPrevious() {
+
+        passcodeStep1 = null;
+        passcodeStep2 = null;
+
+        $('#lb-header-text').text("CREATE YOUR PASSCODE")
+        $('#text-step-passcode').text("[ 1 / 2 ]")
+
+        $('#inputPassCode6').val("");
+        $('#inputPassCode5').val("");
+        $('#inputPassCode4').val("");
+        $('#inputPassCode3').val("");
+        $('#inputPassCode2').val("");
+        $('#inputPassCode1').val("");
+
+        $('#back-to-previous').addClass('d-none');
+        $('#lb-header-text').removeClass('header-text-confirm');
+        $('#lb-header-text').addClass('header-text');
+    }
+
+
+    //[Begin] Submit form
+
+    function createWithPassCode() {
+
+        var getCurrentPassCode1 = $('#inputPassCode1').val();
+        var getCurrentPassCode2 = $('#inputPassCode2').val();
+        var getCurrentPassCode3 = $('#inputPassCode3').val();
+        var getCurrentPassCode4 = $('#inputPassCode4').val();
+        var getCurrentPassCode5 = $('#inputPassCode5').val();
+        var getCurrentPassCode6 = $('#inputPassCode6').val();
+
+        var getPassCode = getCurrentPassCode1 + getCurrentPassCode2 + getCurrentPassCode3 + getCurrentPassCode4 + getCurrentPassCode5 + getCurrentPassCode6;
+
+        if (getPassCode.length === 6) {
+
+            $('#ui-block').offcanvas("show");
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+
+                    var latitude = position.coords.latitude;
+
+                    var longitude = position.coords.longitude;
+
+                    var param = getModel();
+
+                        param.passCode = parseInt(getPassCode);
+
+                        $.ajax({
+                            url: '@Url.Action("UpdatePassCode", "RegisterPassCode")',
+                            data: param,
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            success: function (data) {
+
+                                if (data.status == true) {
+
+                                    toastSuccess("Hello !! " + data.data.userName, "Welcome back to marstian application.")
+
+                                    sessionStorage.setItem('lastUsername', data.data.userName);
+
+                                    window.location.href = "@Url.Action("Index","Home")";
+                                }
+                                else {
+
+                                    var message = 'N/A';
+
+                                    if (data.message != null) {
+
+                                        if (data.exception != null) {
+                                            message = data.exception;
+                                        }
+                                        else {
+                                            message = "Can't connect server.";
+                                        }
+                                    }
+                                    else {
+                                        message = data.message;
+                                    }
+
+                                    fnBlockScreenError("Warning.", message)
+                                }
+
+
+                            },
+                            fail: function () {
+                                fnBlockScreenError("Internal Server" , "Please contact administrator.")
+                            }
+                        });
+
+                    }, function (error) {
+                        // Handle errors
+                        switch (error.code) {
+                            case error.PERMISSION_DENIED:
+                                toastError("Error", "User denied the request for Geolocation.");
+                                fnBlockScreenWarning("Did you Know?", "You need to allow access to the map location on your browser according to the agreement. and conditions of use of our website");
+                                break;
+                            case error.POSITION_UNAVAILABLE:
+                                toastError("Error", "Location information is unavailable.");
+                                fnBlockScreenWarning("Did you Know?", "You need to allow access to the map location on your browser according to the agreement. and conditions of use of our website");
+                                break;
+                            case error.TIMEOUT:
+                                toastError("Error", "The request to get user location timed out.");
+                                fnBlockScreenWarning("Did you Know?", "You need to allow access to the map location on your browser according to the agreement. and conditions of use of our website");
+                                break;
+                            case error.UNKNOWN_ERROR:
+                                toastError("Error", "An unknown error occurred.");
+                                fnBlockScreenWarning("Did you Know?", "You need to allow access to the map location on your browser according to the agreement. and conditions of use of our website");
+                                break;
+                        }
+
+                    });
+                }
+
+            else {
+                fnBlockScreenError("Error", "Something's not right. Geolocation is not supported by this browser.");
+            }
+
+        }
+
+        else {
+            toastError("Warning.", "Not Pass");
+        }
+
+    }
+
+    //[End] Submit form
+
+    //[Begin] Element mapping
+
+
+    function getModel() {
+
+        var data = new Object();
+
+        var getCurrentPassCode1 = $('#inputPassCode1').val();
+        var getCurrentPassCode2 = $('#inputPassCode2').val();
+        var getCurrentPassCode3 = $('#inputPassCode3').val();
+        var getCurrentPassCode4 = $('#inputPassCode4').val();
+        var getCurrentPassCode5 = $('#inputPassCode5').val();
+        var getCurrentPassCode6 = $('#inputPassCode6').val();
+
+        data.passCode = getCurrentPassCode1 + getCurrentPassCode2 + getCurrentPassCode3 + getCurrentPassCode4 + getCurrentPassCode5 + getCurrentPassCode6;
+
+        return data;
+
+    }
+
+
+
+    //[End] Element mapping
+
+</script>

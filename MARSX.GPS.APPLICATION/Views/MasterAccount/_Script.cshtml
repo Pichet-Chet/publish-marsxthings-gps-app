@@ -1,0 +1,73 @@
+﻿<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        GetUsers();
+
+    });
+
+    function GetUsers() {
+
+        var filter = new Object();
+        filter.isAll = true;
+
+
+        $.ajax({
+            type: "Get",
+            contentType: "charset=utf-8",
+            data: filter,
+            url: '@Url.Action("Get", "MasterAccount")',
+            success: function (resp) {
+
+                if (resp.effectRow > 0) {
+
+                    var appendHtml = '';
+
+                    resp.data.forEach((item) => {
+
+                        var userStatus = verifyAccountStatus(item);
+
+                        appendHtml = `<a onclick="redirectToManageAccount('${item.id}')" data-bs-toggle="offcanvas" class="list-group-item" role="button">
+                                            ${userStatus}
+                                            <img src="images/pictures/23s.jpg" width="40" class="me-2 rounded-xs">
+                                            <div class="ps-1">
+                                                <strong class="font-600">${item.userName}</strong>
+                                                <span>${item.email}</span>
+                                            </div>
+                                            <i class="bi bi-chevron-right"></i>
+                                        </a>`;
+
+                        $('#renderUsers').append(appendHtml);
+
+                    })
+                }
+                else {
+
+                }
+
+            }
+        });
+    }
+
+    function verifyAccountStatus(param) {
+
+        var result = '';
+
+        if (param.isActive == true) {
+            result = `<i class="ti ti-point-filled text-success font-25"></i>`;
+        }
+        else {
+            result = `<i class="ti ti-point-filled text-danger font-25"></i>`;
+        }
+
+        return result;
+
+    }
+
+
+     function redirectToManageAccount(userId) {
+
+         window.location.href = "@Url.Action("Index", "ManagementAccount")?userId=" + userId ;
+    }
+
+</script>

@@ -1,0 +1,99 @@
+﻿@Html.Hidden("access-with-ip-address", "")
+
+
+<!-- Your Page Content Goes Here-->
+<div class="page-content pb-0 mb-0">
+
+    <div class="row" style="background-image: url(@Url.Content("~/customs/images/banner/banner-004.jpg"))">
+        <div class="justify-content-center">
+            <div class="col-sm-12 col-md-6 col-lg-6" style=" margin: 0 auto; ">
+                <div class="card card-style m-0 shadow-0 rounded-0" data-card-height="cover" style="background-color:transparent;">
+                    <div class="card-center">
+                        <div class="card card-style">
+                            <div class="content" style="text-align-last: center;">
+
+                                <i class="ti ti-arrow-back-up back-to-previous d-none" id="back-to-previous" onclick="backToPrevious()"></i>
+
+                                <span class="text-step-passcode" id="text-step-passcode">[ 1 / 2 ]</span>
+
+                                <img class="pb-3" src="@Url.Content("~/customs/icons/lock/lock-pass-code.png")" width="100" />
+
+                                <h1 class="text-center font-800 font-18 mt-n2 mb-2 header-text" id="lb-header-text">
+                                    CREATE YOUR PIN
+                                </h1>
+
+                                <p class="text-center font-800 font-18 mb-2 d-none" id="passCodeAccount">Account Verification</p>
+
+
+
+                                <div class="text-center mb-3 pt-3 pb-2">
+                                    <form id="formSignInWithPassCode" novalidate>
+                                        <input class="otp mx-0 text-center font-24 font-900" id="inputPassCode1" type="password" value="">
+                                        <input class="otp mx-1 text-center font-24 font-900" id="inputPassCode2" type="password" value="">
+                                        <input class="otp mx-1 text-center font-24 font-900" id="inputPassCode3" type="password" value="">
+                                        <input class="otp mx-1 text-center font-24 font-900" id="inputPassCode4" type="password" value="">
+                                        <input class="otp mx-1 text-center font-24 font-900" id="inputPassCode5" type="password" value="">
+                                        <input class="otp mx-1 text-center font-24 font-900" id="inputPassCode6" type="password" value="">
+                                    </form>
+                                </div>
+
+                                <div class="divider divider-faded"></div>
+
+                                <div class="row mt-3 mb-3">
+                                    <div class="col-4 text-center passcode-numbe pt-3">
+                                        <div onclick="assignPassCodeValue('1')" class="btn-full btn border border-grey-dark text-dark font-20">1</div>
+                                    </div>
+                                    <div class="col-4 text-center passcode-numbe pt-3">
+                                        <div onclick="assignPassCodeValue('2')" class="btn-full btn border border-grey-dark text-dark font-20">2</div>
+                                    </div>
+                                    <div class="col-4 text-center passcode-numbe pt-3">
+                                        <div onclick="assignPassCodeValue('3')" class="btn-full btn border border-grey-dark text-dark font-20">3</div>
+                                    </div>
+                                    <div class="col-4 text-center passcode-numbe pt-3">
+                                        <div onclick="assignPassCodeValue('4')" class="btn-full btn border border-grey-dark text-dark font-20">4</div>
+                                    </div>
+                                    <div class="col-4 text-center passcode-numbe pt-3">
+                                        <div onclick="assignPassCodeValue('5')" class="btn-full btn border border-grey-dark text-dark font-20">5</div>
+                                    </div>
+                                    <div class="col-4 text-center passcode-numbe pt-3">
+                                        <div onclick="assignPassCodeValue('6')" class="btn-full btn border border-grey-dark text-dark font-20">6</div>
+                                    </div>
+                                    <div class="col-4 text-center passcode-numbe pt-3">
+                                        <div onclick="assignPassCodeValue('7')" class="btn-full btn border border-grey-dark text-dark font-20">7</div>
+                                    </div>
+                                    <div class="col-4 text-center passcode-numbe pt-3">
+                                        <div onclick="assignPassCodeValue('8')" class="btn-full btn border border-grey-dark text-dark font-20">8</div>
+                                    </div>
+                                    <div class="col-4 text-center passcode-numbe pt-3">
+                                        <div onclick="assignPassCodeValue('9')" class="btn-full btn border border-grey-dark text-dark font-20">9</div>
+                                    </div>
+                                    <div class="col-4 text-center passcode-numbe pt-3">
+                                        <div onclick="assignPassCodeValue('#')" class="btn-full btn border border-grey-dark text-dark font-20">
+                                            <i class="bi bi-trash"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-4 text-center passcode-numbe pt-3">
+                                        <div onclick="assignPassCodeValue('0')" class="btn-full btn border border-grey-dark text-dark font-20">0</div>
+                                    </div>
+                                    <div class="col-4 text-center passcode-numbe pt-3">
+                                        <div onclick="assignPassCodeValue('D')" class="btn-full btn border border-grey-dark text-dark font-20">
+                                            <i class="bi bi-backspace"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="divider divider-faded"></div>
+
+                                <p class="text-center text-primary font-13 mt-n2 mb-2" role="button" onclick="redirectToPage('Home')">REMIND ME LATER / SKIP</p>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+            <!-- End of Page Content-->

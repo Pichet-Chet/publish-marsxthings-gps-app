@@ -1,0 +1,141 @@
+﻿<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        Get();
+
+    });
+
+    function Get() {
+
+        var filter = new Object();
+        filter.isAll = true;
+
+
+        $.ajax({
+            type: "Get",
+            contentType: "charset=utf-8",
+            data: filter,
+            url: '@Url.Action("Get", "SysGroup")',
+            success: function (resp) {
+
+                if (resp.effectRow > 0) {
+
+                    var appendHtml = '';
+
+                    resp.data.forEach((item) => {
+
+                        var isActive = verifyIsActive(item);
+
+                        appendHtml = `<a data-bs-toggle="offcanvas" class="list-group-item" role="button">
+                                            ${isActive}
+                                            <div class="ps-1">
+                                                <strong class="font-600">${item.nameEn}</strong>
+                                                <span>${item.description}</span>
+                                            </div>
+                                            <i class="bi bi-chevron-right"></i>
+                                        </a>`;
+
+                        $('#renderDataList').append(appendHtml);
+
+                    })
+                }
+                else {
+
+                }
+
+            }
+        });
+    }
+
+    $(function () {
+
+        $("#formSubmit").on("submit", function () {
+
+            var form = $(this)[0];
+
+            if (form.checkValidity() === false) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            else {
+
+                var param = setValue();
+
+                $.ajax({
+                    url: '@Url.Action("Create", "SysGroup")',
+                    data: param,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+
+                        if (data.status == true) {
+                           
+                            clearValue();
+
+                            toastSuccess("Success", data.message);
+                        }
+                        else {
+
+                            toastError("Failed", data.message);
+                        }
+
+                    },
+                    fail: function () {
+                        toastError("Internal Server" , "Please contact administrator.")
+                    }
+                });
+
+            }
+
+        });
+
+    });
+
+
+    function setValue() {
+
+        var data = new Object();
+
+        data.nameEn = $('#txtNameEn').val();
+        data.nameTh = $('#txtNameTh').val();
+        data.description = $('#txtDescription').val();
+        data.isActive = $("#switch-is-active").is(":checked");
+
+        return data;
+
+    }
+
+    function clearValue() {
+
+        $('#txtNameEn').val("");
+        $('#txtNameTh').val("");
+        $('#txtDescription').val("");
+
+    }
+
+
+
+
+    function verifyIsActive(param) {
+
+        var result = '';
+
+        if (param.isActive == true) {
+            result = `<i class="ti ti-point-filled text-success font-25"></i>`;
+        }
+        else {
+            result = `<i class="ti ti-point-filled text-danger font-25"></i>`;
+        }
+
+        return result;
+
+    }
+
+
+     function redirectToManageAccount(userId) {
+
+         window.location.href = "@Url.Action("Index", "ManagementAccount")?userId=" + userId ;
+    }
+
+</script>

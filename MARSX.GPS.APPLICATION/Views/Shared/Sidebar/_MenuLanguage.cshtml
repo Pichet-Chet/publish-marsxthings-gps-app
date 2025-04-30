@@ -1,0 +1,81 @@
+﻿     <!-- Main Bell-->
+<div id="menu-language"
+     @*data-menu-load="menu-bell.html"*@
+     style="height: 170px"
+     class="offcanvas offcanvas-top offcanvas-detached rounded-m">
+    <div class="content">
+        <div class="d-flex">
+            <div>
+                <h1 class="mb-0 font-20">Select your language</h1>
+            </div>
+            <div class="ms-auto me-n2">
+                <a href="#" data-bs-dismiss="offcanvas" class="icon icon-xs mt-n1"><i class="bi bi-x-circle-fill color-red-dark font-18"></i></a>
+            </div>
+        </div>
+        <div class="divider mt-2 mb-3"></div>
+
+        <div class="row text-center row-cols-4 mb-0">
+            <div class="col" title="United Kingdom" onclick="onSelectLanguage('en')" id="en">
+                <img width="50" src="@Url.Content("~/customs/flag/country/flag-united-kingdom.png")" data-src="@Url.Content("~/customs/flag/country/flag-united-kingdom.png")" class="preload-img img-fluid rounded-circle entered loaded" alt="img" data-ll-status="loaded">
+            </div>
+            <div class="col" title="Thailand" onclick="onSelectLanguage('th')" id="th">
+                <img width="50" src="@Url.Content("~/customs/flag/country/flag-thailand.png")" data-src="@Url.Content("~/customs/flag/country/flag-thailand.png")" class="preload-img img-fluid rounded-circle entered loaded" alt="img" data-ll-status="loaded">
+            </div>
+            @*<a class="col" title="China">
+                    <img width="50" src="@Url.Content("~/customs/flag/country/flag-china.png")" data-src="@Url.Content("~/customs/flag/country/flag-china.png")" class="preload-img img-fluid rounded-circle entered loaded" alt="img" data-ll-status="loaded">
+                </a>
+                <a class="col" title="India">
+                    <img width="50" src="@Url.Content("~/customs/flag/country/flag-india.png")" data-src="@Url.Content("~/customs/flag/country/flag-india.png")" class="preload-img img-fluid rounded-circle entered loaded" alt="img" data-ll-status="loaded">
+                </a>*@
+        </div>
+
+
+    </div>
+
+</div>
+
+<script>
+    function onSelectLanguage(paraLange) {
+
+            const setOldLanguage = sessionStorage.getItem('currentLanguage');
+
+            sessionStorage.setItem('currentLanguage', paraLange);
+
+            const currentLanguage = sessionStorage.getItem('currentLanguage');
+
+            var flagUk = '@Url.Content("~/customs/flag/country/flag-united-kingdom.png")';
+
+            var flagThai = '@Url.Content("~/customs/flag/country/flag-thailand.png")';
+
+            if (currentLanguage == 'th') {
+
+                map.Layers.setBase(longdo.Layers.EASY);
+
+                $('#flagCountryMap').attr('src', `${flagThai}`);
+
+            } else {
+                map.Layers.setBase(longdo.Layers.EASY);
+
+                $('#flagCountryMap').attr('src', `${flagUk}`);
+            }
+
+            const elements = document.querySelectorAll('[translate="yes"]');
+
+            elements.forEach(element => {
+
+                var key = element.innerText.trim();
+
+                if (currentLanguage == paraLange) {
+
+                    var sourceLang = setOldLanguage;
+                    var targetLang = paraLange;
+
+                    var url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=" + sourceLang + "&tl=" + targetLang + "&dt=t&q=" + encodeURI(key);
+
+                    $.getJSON(url, function (data) {
+                        element.innerHTML = data[0][0][0];
+                    });
+                }
+            });
+        }
+</script>

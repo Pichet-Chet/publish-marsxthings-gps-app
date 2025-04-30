@@ -1,0 +1,17 @@
+﻿@{
+    ViewData["Title"] = "PassCode";
+    ViewData["Name"] = "";
+    ViewData["NameLower"] = "pass code";
+    Layout = "~/Views/Shared/_LayoutPassCode.cshtml";
+
+}
+
+@section Style {
+    @await Html.PartialAsync("_Style")
+}
+
+@await Html.PartialAsync("_Content")
+
+@section Scripts {
+    @await Html.PartialAsync("_Script")
+}

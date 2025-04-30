@@ -1,0 +1,89 @@
+﻿@Html.Hidden("inputId", "")
+
+<!-- Floating Create Bar-->
+<a href="#" role="button" class="create-floating" data-bs-toggle="offcanvas" data-bs-target="#canvas-form">
+    <i class="ti ti-plus font-30"></i>
+</a>
+
+
+<div class="page-content header-clear-medium">
+
+    <div class="card card-style">
+        <div class="content">
+            <h5 class="color-highlight font-13 mb-n1" translate="yes">Status device master</h5>
+            <p class="mb-3 mt-3 font-13" translate="yes">
+                Tap to item for setting group.
+            </p>
+            <div class="form-custom form-label form-icon mb-3 form-border">
+                <i class="bi bi-search font-14"></i>
+                <label for="txtSearch" class="color-theme d-none" translate="yes"></label>
+                <input type="text" id="txtSearch" class="form-control rounded-xs" placeholder="" onkeyup="onFilter()">
+            </div>
+            <div class="list-group list-custom list-group-m rounded-m" id="renderDataList">
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End of Page Content-->
+
+
+<div class="offcanvas offcanvas-bottom rounded-m offcanvas-detached bg-theme" id="canvas-form" style="height:80% !important">
+    <div class="content">
+        <div class="d-flex pb-2">
+            <div class="align-self-center">
+                <h5 class="mb-n2 font-12 color-highlight font-700 text-uppercase pt-1" translate="yes">MASTER STATUS DEVICE</h5>
+                <h1 class="font-600 font-16 pt-2" translate="yes">CREATE RECORD</h1>
+            </div>
+            <div class="align-self-center ms-auto">
+                <div onclick="closeOffCanvas()" role="button" class="icon icon-m"><i class="bi bi-x-circle-fill color-red-dark font-18 me-n4"></i></div>
+            </div>
+        </div>
+        <div class="divider"></div>
+        <form id="formSubmit" class="demo-animation needs-validation m-0" novalidate>
+            <div class="form-custom form-label form-border form-icon mb-3 bg-transparent">
+                <i class="bi bi-pencil-square font-13"></i>
+                <input type="text" id="inputNameEn" class="form-control rounded-xs" placeholder="NAME (EN)" required onkeypress="return regEnglishOrNumber(event)" />
+                <label for="c1" class="color-theme">Name (EN)</label>
+                <div class="invalid-feedback" translate="yes">
+                    Please fill in the required fields.
+                </div>
+                <span translate="yes">(required)</span>
+            </div>
+
+            <div class="form-custom form-label form-border form-icon mb-3 bg-transparent">
+                <i class="bi bi-pencil-square font-13"></i>
+                <input type="text" id="inputNameTh" class="form-control rounded-xs" placeholder="NAME (TH)" required onkeypress="return regThaiOrNumber(event)" />
+                <label for="c1" class="color-theme">Name (TH)</label>
+                <div class="invalid-feedback" translate="yes">
+                    Please fill in the required fields.
+                </div>
+                <span translate="yes">(required)</span>
+            </div>
+
+            <div class="form-custom form-label form-border form-icon mb-3 bg-transparent">
+                <i class="bi bi-pencil-square font-13"></i>
+                <input type="text" id="inputDescription" class="form-control rounded-xs" placeholder="Description" />
+                <label for="c1" class="color-theme">Description</label>
+                <span translate="yes">(optional)</span>
+            </div>
+
+            <a href="#" class="d-flex pb-2" data-trigger-switch="switch-is-active">
+                <div class="align-self-center">
+                    <h6 class="mb-0 font-12">DISABLE / ENABLE</h6>
+                </div>
+                <div class="ms-auto align-self-center">
+                    <div class="form-switch ios-switch switch-green switch-s">
+                        <input type="checkbox" class="ios-input" id="switch-is-active" checked>
+                        <label class="custom-control-label" for="switch-is-active"></label>
+                    </div>
+                </div>
+            </a>
+
+
+            <button class="save-floating" type="submit" translate="yes">
+                <i class="ti ti-device-floppy font-30"></i>
+            </button>
+        </form>
+    </div>
+</div>

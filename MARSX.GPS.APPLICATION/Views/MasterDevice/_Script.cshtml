@@ -1,0 +1,407 @@
+﻿<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        Get();
+
+    });
+
+
+    function onFilter() {
+
+        var textCurrent = $('#txtSearch').val();
+
+        var value = textCurrent.toLowerCase();
+
+        $("#renderDataList #record").filter(function () {
+
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+
+        });
+    }
+
+    function Get() {
+
+        var filter = new Object();
+
+        filter.isAll = true;
+
+
+        $.ajax({
+            type: "Get",
+            contentType: "charset=utf-8",
+            data: filter,
+            url: '@Url.Action("Get", "MasterDevice")',
+            success: function (resp) {
+
+                if (resp.effectRow > 0) {
+
+                    $('#renderDataList').html("");
+
+                    var appendHtml = '';
+
+                    var fragment = document.createDocumentFragment();
+
+                    resp.data.forEach((item) => {
+
+                        var isActive = verifyIsActive(item);
+
+                        appendHtml = `<div id="record">
+                                            <div onclick="update(${item.id})" class="list-group-item" role="button">
+                                                ${isActive}
+                                                <div class="ps-1">
+                                                    <strong class="font-600">${item.name}</strong>
+                                                    <span>${item.model}</span>
+                                                </div>
+                                                <i class="bi bi-chevron-right"></i>
+                                            </div>
+                                        </div>`;
+
+                        var temp = document.createElement('template');
+                        temp.innerHTML = appendHtml;
+                        fragment.appendChild(temp.content.firstChild);
+
+                    })
+
+                    $('#renderDataList').append(fragment);
+
+                }
+                else {
+
+                }
+
+            }
+        });
+    }
+
+    $(function () {
+
+        $("#formSubmit").on("submit", function () {
+
+            var form = $(this)[0];
+
+            if (form.checkValidity() === false) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            else {
+
+                var param = setParameter();
+
+                var urlAction = verifyUrlAction();
+
+                $.ajax({
+                    url: urlAction,
+                    data: param,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+
+                        if (data.status == true) {
+
+                            clearValue();
+
+                            $('#canvas-form').offcanvas('hide');
+
+                            toastSuccess(data.type, data.message);
+
+                            Get();
+
+                        }
+                        else {
+
+                            $('#canvas-form').offcanvas('hide');
+
+                            toastError(data.type, data.message);
+
+                        }
+
+                    },
+                    fail: function () {
+                        toastError("Internal Server" , "Please contact administrator.")
+                    }
+                });
+
+            }
+
+        });
+
+    });
+
+    function setParameter() {
+
+        var data = new Object();
+
+        data.id = $('#inputId').val();
+        data.MasterGpsProviderId = 2;
+        data.RefTrackingId = $('#inputUniqueId').val();
+        data.MasterDeviceStatusId = $('#inputStatusId option:selected').val();
+        data.MasterDeviceGroupId = $('#inputGroupId option:selected').val();
+        data.MasterDeviceCategoryId = $('#inputCategoryId option:selected').val();
+        data.Name = $('#inputName').val();
+        data.Model = $('#inputPhone').val();
+        data.Phone = $('#inputModel').val();
+        data.Contact = $('#inputContact').val();
+        data.Description = $('#inputDescription').val();
+        data.isActive = $("#switch-is-active").is(":checked");
+
+        return data;
+
+    }
+
+    function openOffCanvas() {
+
+        disabledForm(false);
+
+        clearValue();
+
+        onLoadMasterDeviceGroup();
+        onLoadMasterDeviceCategory();
+        onLoadMasterDeviceStatus();
+
+        $('#canvas-form').offcanvas('show');
+
+    }
+
+    function closeOffCanvas() {
+
+        clearValue();
+
+        $('#canvas-form').offcanvas('hide');
+
+    }
+
+    function clearValue() {
+
+        $('#inputId').val("");
+        $('#inputName').val("");
+        $('#inputUniqueId').val("");
+        $('#inputGroupId').val('');
+        $('#inputCategoryId').val('');
+        $('#inputPhone').val("");
+        $('#inputModel').val("");
+        $('#inputContact').val("");
+        $('#inputDescription').val("");
+        $("#switch-is-active").prop('checked', true);
+
+    }
+
+
+    function update(id) {
+
+        onLoadMasterDeviceGroup();
+        onLoadMasterDeviceCategory();
+        onLoadMasterDeviceStatus();
+
+        $('#canvas-form').offcanvas('show');
+
+        setValueUpdate(id);
+
+    }
+
+
+    function setValueUpdate(id) {
+
+        $.ajax({
+            type: "Get",
+            contentType: "charset=utf-8",
+            url: '@Url.Action("Detail", "MasterDevice")?id=' + id,
+            success: function (resp) {
+
+                if (resp.effectRow > 0) {
+
+                    var data = resp.data;
+
+                    $('#inputId').val(data.id);
+                    $('#inputName').val(data.name);
+                    $('#inputUniqueId').val(data.refTrackingId);
+                    $('#inputGroupId').val(data.masterDeviceGroupId);
+                    $('#inputCategoryId').val(data.masterDeviceCategoryId);
+                    $('#inputStatusId').val(data.masterDeviceStatusId);
+                    $('#inputPhone').val(data.phone);
+                    $('#inputModel').val(data.model);
+                    $('#inputContact').val(data.contact);
+                    $('#inputDescription').val(data.description);
+                    $("#switch-is-active").prop('checked', data.isActive);
+
+                    disabledForm(true);
+                }
+                else {
+
+                }
+
+            }
+        });
+    }
+
+
+    function disabledForm(action) {
+
+        $("#inputUniqueId").prop("disabled", action);
+
+    }
+
+
+    function verifyIsActive(param) {
+
+        var result = '';
+
+        if (param.isActive == true) {
+            result = `<i class="ti ti-point-filled text-success font-25"></i>`;
+        }
+        else {
+            result = `<i class="ti ti-point-filled text-danger font-25"></i>`;
+        }
+
+        return result;
+
+    }
+
+    function verifyUrlAction() {
+
+        var result = '';
+
+        var currentId = $('#inputId').val();
+
+        if (currentId == "") {
+
+            result = '@Url.Action("Create", "MasterDevice")';
+
+        }
+        else {
+            result = '@Url.Action("Update", "MasterDevice")';
+        }
+
+        return result;
+
+    }
+
+</script>
+
+
+<script type="text/javascript" title="renderDropDown">
+
+    function onLoadMasterDeviceGroup() {
+
+        var filter = new Object();
+        filter.isActive = true;
+        filter.isAll = true;
+
+        $.ajax({
+            type: "Get",
+            contentType: "charset=utf-8",
+            data: filter,
+            url: '@Url.Action("Get", "MasterDeviceGroup")',
+            success: function (resp) {
+
+                if (resp.effectRow > 0) {
+
+                    $('#inputGroupId').empty();
+
+                    $('#inputGroupId').append($('<option>', {
+                        value: '',
+                        text: '--- Please select group ---'
+                    }));
+
+                    $.each(resp.data, function (index, prop) {
+
+                        $('#inputGroupId').append($('<option>', {
+                            value: prop.id,
+                            text: prop.nameEn
+                        }));
+                    });
+
+                }
+                else {
+                    $('#inputGroupId').empty();
+                }
+
+            }
+        });
+    }
+
+
+    function onLoadMasterDeviceCategory() {
+
+        var filter = new Object();
+        filter.isActive = true;
+        filter.isAll = true;
+
+        $.ajax({
+            type: "Get",
+            contentType: "charset=utf-8",
+            data: filter,
+            url: '@Url.Action("Get", "MasterDeviceCategory")',
+            success: function (resp) {
+
+                if (resp.effectRow > 0) {
+
+                    $('#inputCategoryId').empty();
+
+                    $('#inputCategoryId').append($('<option>', {
+                        value: '',
+                        text: '--- Please select category ---'
+                    }));
+
+                    $.each(resp.data, function (index, prop) {
+
+                        $('#inputCategoryId').append($('<option>', {
+                            value: prop.id,
+                            text: prop.nameEn
+                        }));
+                    });
+
+                }
+                else {
+                    $('#inputCategoryId').empty();
+                }
+
+            }
+        });
+
+    }
+
+
+    function onLoadMasterDeviceStatus() {
+
+        var filter = new Object();
+        filter.isActive = true;
+        filter.isAll = true;
+
+        $.ajax({
+            type: "Get",
+            contentType: "charset=utf-8",
+            data: filter,
+            url: '@Url.Action("Get", "MasterDeviceStatus")',
+            success: function (resp) {
+
+                if (resp.effectRow > 0) {
+
+                    $('#inputStatusId').empty();
+
+                    $('#inputStatusId').append($('<option>', {
+                        value: '',
+                        text: '--- Please select category ---'
+                    }));
+
+                    $.each(resp.data, function (index, prop) {
+
+                        $('#inputStatusId').append($('<option>', {
+                            value: prop.id,
+                            text: prop.nameEn
+                        }));
+                    });
+
+                }
+                else {
+                    $('#inputStatusId').empty();
+                }
+
+            }
+        });
+
+    }
+
+
+
+</script>

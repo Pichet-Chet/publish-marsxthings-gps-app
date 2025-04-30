@@ -1,0 +1,184 @@
+﻿@model MARSX.GPS.APPLICATION.Models.Customs.MarsxTrack.MasterDeviceView
+
+@Html.Hidden("device-info-lat", Model.Lat)
+
+@Html.Hidden("device-info-lon", Model.Lon)
+
+
+        <!-- Your Page Content Goes Here-->
+        <div class="page-content header-clear-small">
+
+            <div class="row">
+
+                <div class="d-flex justify-content-center">
+                    <div class="col-12 col-xs-12 col-sm-12 col-md-6 col-lg-3 col-xxl-2">
+                        <div class="row">
+                            <div class="col-12 mb-n2">
+                                <div class="card card-style" data-card-height="300" style="height: 300px;background-image:url(@Url.Content("~/customs/images/model/excavators/XE135B/XE135B.jpg"))">
+                                    <div class="card-top">
+                                        <span id="device-icon-ignition" class="float-end m-3 icon icon-xl rounded-m gradient-red shadow-bg shadow-bg-xs font-35">
+                                            <i class="ti ti-engine font-30 color-white"></i>
+                                        </span>
+                                    </div>
+                                </div>  
+                            </div>
+
+                            <div class="col-12">
+                                <div class="card card-style">
+                                    <div class="content">
+                                        <h5 class="font-500 pb-2 text-center" id="device-text-name">NAME : N/A</h5>
+                                        <h5 class="font-500 pb-2 text-center" id="device-text-model">MODEL : N/A</h5>
+                                        <p class="mb-3 text-center" id="device-text-address">
+
+                                        </p>
+                                        <div class="divider my-3"></div>
+                                        <div class="progress rounded-xs bg-theme border" style="height:35px">
+                                            <div id="device-fuel-percent" class="progress-bar text-start ps-3 font-600 font-10" role="progressbar" style="width: 78%">
+                                                @*<span style="font-size: medium;">
+                            <i class="ti ti-gas-station"></i>
+                            <span id="device-text-fuel-percent">
+                            </span>
+                        </span>*@
+                                            </div>
+                                        </div>
+
+                                        <div class="pt-2">
+                                            <span class="fw-bold">
+                                                <i class="ti ti-point-filled"></i>
+                                                Fuel
+                                            </span>
+                                            <span id="device-text-fuel-percent" class="device-detail-value">
+                                            </span>
+                                        </div>
+
+                                        <div class="divider my-1"></div>
+
+                                        <div class="pt-2">
+                                            <span class="fw-bold">
+                                                <i class="ti ti-point-filled"></i>
+                                                Power
+                                            </span>
+                                            <span id="device-text-power" class="device-detail-value">
+                                            </span>
+                                        </div>
+
+                                        <div class="divider my-1"></div>
+
+                                        <div class="pt-2">
+                                            <span class="fw-bold">
+                                                <i class="ti ti-point-filled"></i>
+                                                Battery
+                                            </span>
+                                            <span id="device-text-battery" class="device-detail-value">
+                                            </span>
+                                        </div>
+
+                                        <div class="divider my-1"></div>
+
+                                        <div class="pt-2">
+                                            <span class="fw-bold">
+                                                <i class="ti ti-point-filled"></i>
+                                                Speed
+                                            </span>
+                                            <span id="device-text-speed" class="device-detail-value">
+                                            </span>
+                                        </div>
+
+                                        <div class="divider my-1"></div>
+
+                                        <div class="pt-2">
+                                            <span class="fw-bold">
+                                                <i class="ti ti-point-filled"></i>
+                                                total distance
+                                            </span>
+                                            <span id="device-text-total-distance" class="device-detail-value">
+                                            </span>
+                                        </div>
+
+                                        <div class="divider my-1"></div>
+
+                                        <div class="pt-2">
+                                            <span class="fw-bold">
+                                                <i class="ti ti-point-filled"></i>
+                                                hours
+                                            </span>
+                                            <span id="device-text-hours" class="device-detail-value">
+                                            </span>
+                                        </div>
+
+                                        <div class="divider my-1"></div>
+
+                                        <div class="pt-2">
+                                            <span class="fw-bold">
+                                                <i class="ti ti-point-filled"></i>
+                                                Last update
+                                            </span>
+                                            <span id="device-text-server-time" class="device-detail-value">
+                                            </span>
+                                        </div>
+
+                                        <div class="divider my-1"></div>
+
+                                        <div class="pt-2 d-none">
+                                            <span class="fw-bold">
+                                                <i class="ti ti-point-filled"></i>
+                                                Device time
+                                            </span>
+                                            <span id="device-text-device-time" class="device-detail-value">
+                                            </span>
+                                        </div>
+
+                                        <div class="pt-2 d-none">
+                                            <span class="fw-bold">
+                                                <i class="ti ti-point-filled"></i>
+                                                Fix time
+                                            </span>
+                                            <span id="device-text-fix-time" class="device-detail-value">
+                                            </span>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+
+                                <div class="card card-style">
+                                    <div class="content">
+
+                                        <div class="pt-2">
+                                            <span class="fw-bold">
+                                                <i class="ti ti-point-filled"></i>
+                                                Car no.
+                                            </span>
+                                            <span id="device-text-car-no" class="device-detail-value">
+                                            </span>
+                                        </div>
+
+                                        <div class="divider my-1"></div>
+
+                                        <div class="pt-2">
+                                            <span class="fw-bold">
+                                                <i class="ti ti-point-filled"></i>
+                                                Company owner name
+                                            </span>
+                                            <span id="device-text-company-owner-name" class="device-detail-value">
+                                            </span>
+                                        </div>
+
+                                        <div class="divider my-1"></div>
+
+                                        
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                            
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!-- End of Page Content-->

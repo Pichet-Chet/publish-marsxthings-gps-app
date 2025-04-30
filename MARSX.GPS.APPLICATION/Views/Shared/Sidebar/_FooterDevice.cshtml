@@ -1,0 +1,25 @@
+﻿<!-- Footer Bar-->
+<div id="footer-bar" class="footer-bar footer-bar-detached">
+    <a onclick="backToHome()" role="button"><i class="bi bi-house-fill font-15"></i><span>Home</span></a>
+    <a href="#" class="active-nav" role="button"><i class="ti ti-car font-16"></i><span></span></a>
+    <a href="#" onclick="callGoogleMap()" role="button"><i class="ti ti-location"></i><span>Google map</span></a>
+</div>
+
+
+<script type="text/javascript">
+    function backToHome() {
+        window.location.href = "@Url.Action("Index","Home")";
+    }
+
+    function callGoogleMap() {
+
+        var getTargetLat = $('#device-info-lat').val();
+
+        var getTargetLon = $('#device-info-lon').val();
+
+        var googleMapUrl = `https://www.google.com/maps/?q=` + getTargetLat + "," + getTargetLon;
+
+        window.open(googleMapUrl, '_blank');
+
+    }
+</script>

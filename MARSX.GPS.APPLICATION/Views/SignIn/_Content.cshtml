@@ -1,0 +1,117 @@
+﻿@Html.Hidden("access-with-ip-address", "")
+@Html.Hidden("access-with-isp-name", "")
+@Html.Hidden("access-with-isp-country", "")
+
+
+
+<!-- Your Page Content Goes Here-->
+<div class="page-content header-clear-medium" style="background-image: url(@Url.Content("~/customs/images/banner/marsxthings_01_25_2024-1.webp"));padding-bottom: 100px; background-size: cover; background-attachment: fixed; background-position: center;">
+
+    <div class="row">
+        <div class="justify-content-center">
+            <div class="col-sm-12 col-md-6 col-lg-4" style="text-align-last: center;margin: 0 auto;">
+                <div class="card card-style mx-0 shadow-card shadow-card-m" style="background-image: url(@Url.Content("~/customs/images/banner/marsxthings_01_16_2024-3.webp"))" data-card-height="230">
+                    <div class="card-center pb-3 px-3">
+                        @*<img src="@Url.Content("~/customs/images/logo.webp")" width="200" />*@
+                        <h3 class="color-white mb-1">
+                            MARSTIAN
+                        </h3>
+                        <p class="color-white opacity-80 mb-0 mt-n1 font-14 pt-2">
+                            GPS TRACKING SYSTEM.
+                        </p>
+                    </div>
+                    <div class="card-overlay bg-gradient-fade"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="justify-content-center">
+            <div class="col-sm-12 col-md-6 col-lg-4" style=" margin: 0 auto; ">
+                <div class="card card-style" style="background-color: #ffffff7a !important;">
+                    <div class="content">
+                        <h1 class="text-center font-800 font-30 mb-2" translate="yes">LOG IN</h1>
+                        <p class="text-center font-13 mt-n2 mb-3 pt-2">@*Enter your Credentials*@</p>
+                        <form id="formSignIn" class="demo-animation needs-validation m-0">
+
+                            <div class="form-custom form-label form-icon mb-3">
+                                <i class="bi bi-person-circle font-14"></i>
+                                <input type="text" class="form-control rounded-xs" id="txtUsername" placeholder="" required style="background-color:white;" />
+                                <label for="txtUsername" class="color-theme" translate="yes">Username</label>
+                                <div class="invalid-feedback" translate="yes">Username is Missing or Invalid</div>
+                                <span translate="yes">(required)</span>
+                            </div>
+
+                            <div class="form-custom form-label form-icon mb-3">
+                                <i class="bi bi-asterisk font-12"></i>
+                                <input type="password" class="form-control rounded-xs" id="txtPassword" placeholder="" required style="background-color:white;" />
+                                <label for="txtPassword" class="color-theme" translate="yes">Password</label>
+                                <div class="invalid-feedback" translate="yes">Password is Missing or Invalid</div>
+                                <span translate="yes">(required)</span>
+                            </div>
+
+                            <button class="btn btn-full bg-orange-dark rounded-xs text-uppercase font-700 w-100 btn-s mt-4" type="submit" translate="yes">SIGN IN</button>
+                        </form>
+                        <div class="d-flex">
+                            <div>
+                                <a href="#" class="color-theme opacity-30 font-12" translate="yes">Recover Account</a>
+                            </div>
+                            <div class="ms-auto">
+                                <a href="#" class="color-theme opacity-30 font-12" translate="yes">Create Account</a>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="text-center">
+                            <div onclick="onSelectLanguage(this)" id="en" class="icon icon-s me-2 shadow-bg shadow-bg-xs rounded-m">
+                                <img src="@Url.Content("~/customs/flag/country/flag-united-kingdom.png")" width="38" />
+                            </div>
+                            @*<div onclick="onSelectLanguage(this)" id="zh-CN" class="icon icon-s me-2 shadow-bg shadow-bg-xs rounded-m">
+                                    <img src="~/customs/flag/country/flag-china.png" width="38" />
+                                </div>*@
+                            <div onclick="onSelectLanguage(this)" id="th" class="icon icon-s me-2 shadow-bg shadow-bg-xs rounded-m">
+                                <img src="@Url.Content("~/customs/flag/country/flag-thailand.png")" width="38" />
+                            </div>
+                            @*<div onclick="onSelectLanguage(this)" id="hi" class="icon icon-s me-2 shadow-bg shadow-bg-xs rounded-m">
+                                    <img src="~/customs/flag/country/flag-india.png" width="38" />
+                                </div>*@
+                            <br />
+                            <br />
+                            <span class="p-1 color-theme opacity-70 font-10" translate="yes">
+                                I confirm that I have read and agree to the Terms of Service. and privacy policy with the website marstian.com
+                            </span>
+                            <br />
+
+                            <span class="bg-white rounded-xs p-1 color-theme opacity-70 font-10" translate="yes">
+                                <a role="button" class="text-primary" onclick="redirectToPage('TermsOfService')">
+                                    Terms of Service.
+                                </a>
+                                and
+                                <a role="button" class="text-primary" onclick="redirectToPage('PrivacyPolicy')">
+                                    Privacy Policy.
+                                </a>
+                            </span>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="justify-content-center">
+            <div class="col-sm-12 col-md-6 col-lg-4" style=" margin: 0 auto; ">
+
+                <div id="footer-bar" class="footer-bar footer-bar-detached pt-2">
+                    <a href="#"><span>© 2024 MARSX THINGS CO.LTD, All rights reserved.</span></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+<!-- End of Page Content-->

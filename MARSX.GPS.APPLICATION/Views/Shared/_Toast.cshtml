@@ -1,0 +1,85 @@
+﻿<script type="text/javascript">
+
+    function toastSuccess(header, content) {
+
+        $("#toast-success").toast('hide');
+
+        var renderHtml = `<div id="toast-success" class="toast toast-bar toast-top rounded-l bg-green-dark shadow-bg shadow-bg-s" data-bs-delay="5000" style="z-index: 1000;">
+		                    <div class="align-self-center">
+			                    <i class="icon icon-s bg-green-light rounded-l bi bi-check font-28 me-2"></i>
+		                    </div>
+		                    <div class="align-self-center ps-1">
+			                    <strong class="font-10 mb-n2" translate="yes">${header}</strong>
+			                    <span class="font-10 mt-n1 opacity-70" translate="yes">${content}</span>
+		                    </div>
+		                    <div class="align-self-center ms-auto">
+			                    <button type="button" class="btn-close btn-close-white me-2 m-auto font-9" data-bs-dismiss="toast"></button>
+		                    </div>
+	                    </div>`;
+
+        $('#toastArea').append(renderHtml);
+
+        $("#toast-success").toast('show');
+
+        setTimeout(() => {
+            $("#toast-success").toast('hide');
+        }, "5000");
+
+    }
+
+    function toastWarning(header, content) {
+
+        $("#toast-warning").toast('hide');
+
+        var renderHtml = `<div id="toast-warning" class="toast toast-bar toast-top rounded-l bg-yellow-dark shadow-bg shadow-bg-s" data-bs-delay="5000" style="z-index: 1000;">
+		                    <div class="align-self-center">
+			                    <i class="icon icon-s bg-yellow-light rounded-l bi bi-check font-28 me-2"></i>
+		                    </div>
+		                    <div class="align-self-center ps-1">
+			                    <strong class="font-10 mb-n2" translate="yes">${header}</strong>
+			                    <span class="font-10 mt-n1 opacity-70" translate="yes">${content}</span>
+		                    </div>
+		                    <div class="align-self-center ms-auto">
+			                    <button type="button" class="btn-close btn-close-white me-2 m-auto font-9" data-bs-dismiss="toast"></button>
+		                    </div>
+	                    </div>`;
+
+        $('#toastArea').append(renderHtml);
+
+        $("#toast-warning").toast('show');
+
+        setTimeout(() => {
+            $("#toast-warning").toast('hide');
+        }, "5000");
+
+    }
+
+
+    function toastError(header,content) {
+
+        $("#toast-error").toast('hide');
+
+        var renderHtml = `<div id="toast-error" class="toast toast-bar toast-top rounded-l bg-red-dark shadow-bg shadow-bg-s" data-bs-delay="5000" style="z-index: 1000;">
+                            <div class="align-self-center">
+                                <i class="icon icon-s bg-white color-red-dark rounded-l shadow-s bi bi-exclamation-triangle-fill font-22 me-3"></i>
+                            </div>
+                            <div class="align-self-center">
+                                <strong class="font-10 mb-n2" translate="yes">${header}</strong>
+                                <span class="font-10 mt-n1 opacity-70" translate="yes">${content}</span>
+                            </div>
+                            <div class="align-self-center ms-auto">
+                                <button type="button" class="btn-close btn-close-white me-2 m-auto font-9" data-bs-dismiss="toast"></button>
+                            </div>
+                        </div>`;
+
+        $('#toastArea').append(renderHtml);
+
+        $("#toast-error").toast('show');
+
+        setTimeout(() => {
+            $("#toast-error").toast('hide');
+        }, "5000");
+
+    }
+
+</script>

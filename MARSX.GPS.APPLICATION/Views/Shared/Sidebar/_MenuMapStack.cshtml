@@ -1,0 +1,158 @@
+﻿     <!-- Main Bell-->
+<div id="menu-map-stack"
+     @*data-menu-load="menu-bell.html"*@
+     style="height: 370px"
+     class="offcanvas offcanvas-top offcanvas-detached rounded-m">
+    <div class="content">
+        <div class="d-flex">
+            <div>
+                <h1 class="mb-0 font-20">Select your map layer</h1>
+            </div>
+            <div class="ms-auto me-n2">
+                <a href="#" data-bs-dismiss="offcanvas" class="icon icon-xs mt-n1"><i class="bi bi-x-circle-fill color-red-dark font-18"></i></a>
+            </div>
+        </div>
+        <div class="divider mt-2 mb-3"></div>
+
+
+        <div class="row text-center row-cols-4 mb-0">
+            <div class="col" title="Map Layer" onclick="onSelectMapLayer(this)" id="road">
+                <img width="50" src="@Url.Content("~/customs/icons/map-stack/Longdo-road.png")" class="preload-img img-fluid rounded-circle entered loaded" alt="img" data-ll-status="loaded">
+                <h5 class="font-12 pt-2" translate="yes">Road</h5>
+            </div>
+
+            @*<div class="col" title="Map Layer" onclick="onSelectMapLayer(this)" id="grey">
+                    <img width="50" src="@Url.Content("~/customs/icons/map-stack/Longdo-grey.png")" class="preload-img img-fluid rounded-circle entered loaded" alt="img" data-ll-status="loaded">
+                    <h5 class="font-12 pt-2" translate="yes">Grey</h5>
+                </div>
+
+                <div class="col" title="Map Layer" onclick="onSelectMapLayer(this)" id="light">
+                    <img width="50" src="@Url.Content("~/customs/icons/map-stack/Longdo-light.png")" class="preload-img img-fluid rounded-circle entered loaded" alt="img" data-ll-status="loaded">
+                    <h5 class="font-12 pt-2" translate="yes">Light</h5>
+                </div>
+
+                <div class="col" title="Map Layer" onclick="onSelectMapLayer(this)" id="dark">
+                    <img width="50" src="@Url.Content("~/customs/icons/map-stack/Longdo-dark.png")" class="preload-img img-fluid rounded-circle entered loaded" alt="img" data-ll-status="loaded">
+                    <h5 class="font-12 pt-2" translate="yes">Dark</h5>
+                </div>*@
+
+            <div class="col" title="Map Layer" onclick="onSelectMapLayer(this)" id="thaichote">
+                <img width="50" src="@Url.Content("~/customs/icons/map-stack/Longdo-thaichote.png")" class="preload-img img-fluid rounded-circle entered loaded" alt="img" data-ll-status="loaded">
+                <h5 class="font-12 pt-2" translate="yes">Satellite</h5>
+            </div>
+
+            <div class="col" title="Map Layer" onclick="onSelectMapLayer(this)" id="administrative-area">
+                <img width="50" src="@Url.Content("~/customs/icons/map-stack/Longdo-administrative-area.png")" class="preload-img img-fluid rounded-circle entered loaded" alt="img" data-ll-status="loaded">
+                <h5 class="font-12 pt-2" translate="yes">Area</h5>
+            </div>
+        </div>
+
+        @*<div class="divider mt-2 mb-3"></div>
+
+            <h5 class="font-12 pt-2" translate="yes">GISDA Layer</h5>
+
+            <div class="row text-center row-cols-4 mb-0">
+                <div class="col" title="Map Layer" onclick="onSelectMapLayer(this)" id="gisda-road">
+                    <img width="50" src="@Url.Content("~/customs/icons/map-stack/Gisda-road.png")" class="preload-img img-fluid rounded-circle entered loaded" alt="img" data-ll-status="loaded">
+                    <h5 class="font-12 pt-2" translate="yes">Road</h5>
+                </div>
+
+                <div class="col" title="Map Layer" onclick="onSelectMapLayer(this)" id="gisda-image">
+                    <img width="50" src="@Url.Content("~/customs/icons/map-stack/Gisda-image.png")" class="preload-img img-fluid rounded-circle entered loaded" alt="img" data-ll-status="loaded">
+                    <h5 class="font-12 pt-2" translate="yes">Image</h5>
+                </div>
+
+                <div class="col" title="Map Layer" onclick="onSelectMapLayer(this)" id="gisda-satellite">
+                    <img width="50" src="@Url.Content("~/customs/icons/map-stack/Gisda-satellite.png")" class="preload-img img-fluid rounded-circle entered loaded" alt="img" data-ll-status="loaded">
+                    <h5 class="font-12 pt-2" translate="yes">Satellite</h5>
+                </div>
+
+            </div>*@
+
+    </div>
+
+</div>
+
+<script>
+
+    function onLoadMapCamera() {
+
+    }
+
+    function onSelectMapLayer(attr) {
+
+        const currentLanguage = sessionStorage.getItem('currentLanguage');
+
+        var currentId = attr.id;
+
+        if (currentId == "road") {
+            map.Layers.setBase(longdo.Layers.OSM);
+        }
+        else if (currentId == "grey") {
+            map.Layers.setBase(longdo.Layers.GRAY);
+        }
+        else if (currentId == "dark") {
+            map.enableFilter(longdo.Filter.Dark)
+        }
+        else if (currentId == "light") {
+            map.enableFilter(longdo.Filter.Light)
+        }
+
+        else if (currentId == "thaichote") {
+            map.Layers.setBase(longdo.Layers.THAICHOTE);
+        }
+        else if (currentId == "administrative-area") {
+            map.Layers.setBase(longdo.Layers.POLITICAL);
+        }
+        else {
+            map.Layers.setBase(longdo.Layers.EASY);
+        }
+
+    }
+
+    function onSelectMapLayerWithLanguage(attr) {
+
+        const currentLanguage = sessionStorage.getItem('currentLanguage');
+
+        var currentId = attr.id;
+
+        if (currentId == "road") {
+            if (currentLanguage == 'th') {
+                map.Layers.setBase(longdo.Layers.EASY);
+            } else {
+                map.Layers.setBase(longdo.Layers.EASY);
+            }
+        }
+        else if (currentId == "grey") {
+            if (currentLanguage == 'th') {
+                map.Layers.setBase(longdo.Layers.GRAY);
+            } else {
+                map.Layers.setBase(longdo.Layers.GRAY_EN);
+            }
+        }
+        else if (currentId == "dark") {
+            map.enableFilter(longdo.Filter.Dark)
+        }
+        else if (currentId == "light") {
+            map.enableFilter(longdo.Filter.Light)
+        }
+
+        else if (currentId == "thaichote") {
+            map.Layers.setBase(longdo.Layers.THAICHOTE);
+        }
+        else if (currentId == "administrative-area") {
+            if (currentLanguage == 'th') {
+                map.Layers.setBase(longdo.Layers.POLITICAL);
+            } else {
+                map.Layers.setBase(longdo.Layers.POLITICAL_EN);
+            }
+        }
+        else {
+            if (currentLanguage == 'th') {
+                map.Layers.setBase(longdo.Layers.EASY);
+            } else {
+                map.Layers.setBase(longdo.Layers.EASY);
+            }
+        }
+
+    }</script>

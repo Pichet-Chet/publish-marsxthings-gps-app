@@ -1,0 +1,436 @@
+﻿@model MARSX.GPS.APPLICATION.Models.Customs.MarsxTrack.MasterDeviceView
+
+<script type="text/javascript" src="https://api.longdo.com/map3/?key=@Model.LongdoMap.key.ToString()"></script>
+
+@{
+
+    var setId = Model.Id;
+
+    var setAddress = Model == null ? "Unable to find location" : Model.Address == null ? "Unable to find location" :  Model.Address.ToString();
+
+    var setDeviceName = Model == null ? "N/A" : Model.Name == null ? "N/A" : Model.Name;
+
+    var setModelName = Model == null ? "N/A" : Model.Model == null ? "N/A" : Model.Model;
+
+    var setAttrHour = Model == null ? null : Model.TcAttributesView == null ? null : Convert.ToString(Model.TcAttributesView.hours);
+
+    var setAttrIgnition = Model == null ? 0 : Model.TcAttributesView == null ? 0 : Model.TcAttributesView.ignition == true ? 1 : 0;
+
+    var setFuelBalance = Model == null ? null : Model.TcAttributesView == null ? null : Model.TcAttributesView.fuelLevel;
+
+    var setFuelPercent = Model == null ? null : Model.TcAttributesView == null ? null : Model.TcAttributesView.fuel;
+
+    var setPower = Model == null ? null : Model.TcAttributesView == null ? null : Model.TcAttributesView.power;
+
+    var setBattery = Model == null ? null : Model.TcAttributesView == null ? null : Model.TcAttributesView.battery;
+
+    var setServerTime = Model == null ? null : Model.TcAttributesView == null ? null : Model.TcAttributesView.serverTime;
+
+    var setDeviceTime = Model == null ? null : Model.TcAttributesView == null ? null : Model.TcAttributesView.deviceTime;
+
+    var setFixTime = Model == null ? null : Model.TcAttributesView == null ? null : Model.TcAttributesView.fixTime;
+
+    var setSpeed = Model == null ? null : Model.TcAttributesView == null ? null : Model.TcAttributesView.speed;
+
+    var setTotalDistance = Model == null ? null : Model.TcAttributesView == null ? null : Model.TcAttributesView.totalDistance;
+
+    var setCarNo = Model == null ? null : Model.CarNo == null ? null : Model.CarNo;
+
+    var setCompanyOwnerName = Model == null ? null : Model.CompanyOwnerName == null ? null : Model.CompanyOwnerName;
+
+}
+
+
+<script type="text/javascript">
+
+    var socketDeviceMoreDetail;
+
+    $(document).ready(function () {
+
+        renderDefaultData();
+
+        setTimeout(function () {
+
+            onSocketDeviceMoreDetail(@setId)
+
+        }, 3000);
+
+    })
+
+
+    function onSocketDeviceMoreDetail(id) {
+
+        console.log(setNewId);
+
+        socketDeviceMoreDetail = new signalR.HubConnectionBuilder()
+            .withUrl("/SignalRDeviceDetail")
+            .configureLogging(signalR.LogLevel.Information)
+            .build();
+
+        socketDeviceMoreDetail.start().then(function () {
+
+            //console.log("SignalRDeviceDetail Connected");
+
+        }).catch(function (err) {
+
+            //console.log("SignalRDeviceDetail Connection Error: " + err.toString());
+
+        });
+
+        function getDeviceMoreDetail() {
+
+            console.log("setNewId : " + setNewId + " | click id : " + id)
+
+            if (setNewId !== null) {
+
+                if (setNewId == id) {
+
+                    socketDeviceDetail.invoke("GetDeviceDeatil", id).then(function (resp) {
+
+                        var Model = resp.data;
+
+                        console.log(Model);
+
+                        var setId = Model.id;
+
+                        var setAddress = Model == null ? "Unable to find location" : Model.address == null ? "Unable to find location" : Model.address;
+
+                        var setDeviceName = Model == null ? "N/A" : Model.name == null ? "N/A" : Model.name;
+
+                        var setModelName = Model == null ? "N/A" : Model.model == null ? "N/A" : Model.model;
+
+                        var setAttrHour = Model == null ? null : Model.tcAttributesView == null ? null : Model.tcAttributesView.hours;
+
+                        var setAttrIgnition = Model == null ? 0 : Model.tcAttributesView == null ? 0 : Model.tcAttributesView.ignition == true ? 1 : 0;
+
+                        var setFuelBalance = Model == null ? null : Model.tcAttributesView == null ? null : Model.tcAttributesView.fuelLevel;
+
+                        var setFuelPercent = Model == null ? null : Model.tcAttributesView == null ? null : Model.tcAttributesView.fuel;
+
+                        var setPower = Model == null ? null : Model.tcAttributesView == null ? null : Model.tcAttributesView.power;
+
+                        var setBattery = Model == null ? null : Model.tcAttributesView == null ? null : Model.tcAttributesView.battery;
+
+                        var setServerTime = Model == null ? null : Model.tcAttributesView == null ? null : Model.tcAttributesView.serverTime;
+
+                        var setDeviceTime = Model == null ? null : Model.tcAttributesView == null ? null : Model.tcAttributesView.deviceTime;
+
+                        var setFixTime = Model == null ? null : Model.tcAttributesView == null ? null : Model.tcAttributesView.fixTime;
+
+                        var setSpeed = Model == null ? null : Model.tcAttributesView == null ? null : Model.tcAttributesView.speed;
+
+                        var setTotalDistance = Model == null ? null : Model.tcAttributesView == null ? null : Model.tcAttributesView.totalDistance;
+
+                        var setCarNo = Model == null ? null : Model.CarNo == null ? null : Model.CarNo;
+
+                        var setCompanyOwnerName = Model == null ? null : Model.companyOwnerName == null ? null : Model.companyOwnerName;
+
+                        verifyDeviceName(setDeviceName);
+                        verifyAttrIgnition(setAttrIgnition);
+                        verifyModelName(setModelName);
+                        verifyAddress(setAddress);
+                        verifyFuelPercent(setFuelPercent);
+                        verifyFuelPercentText(setFuelPercent, setFuelBalance);
+                        verifyPower(setPower);
+                        verifyBattery(setBattery);
+                        verifyServerTime(setServerTime);
+                        verifyDeviceTime(setDeviceTime);
+                        verifyFixTime(setFixTime);
+                        verifySpeed(setSpeed);
+                        verifyTotalDistance(setTotalDistance);
+                        verifyHours(setAttrHour);
+                        verifyCarNo(setCarNo);
+                        verifyCompanyOwnerName(setCompanyOwnerName);
+
+                        console.log("onSocket more detail : Id : " + Model.id + " [ Writed at " + currentDate + " ]");
+
+
+                    }).catch(function (err) {
+                        //console.error("Error getting device detail:", err.toString());
+                    });
+
+                }
+            }
+
+        }
+
+        updateId(id);
+        setInterval(getDeviceMoreDetail, 5000);
+    }
+
+
+
+    function onCloseDeviceDetailCanvas() {
+        $('#device-detail-canvas').offcanvas('hide');
+    }
+
+    function renderDefaultData() {
+
+        verifyDeviceName('@Html.Raw(setDeviceName)');
+        verifyAttrIgnition(@setAttrIgnition);
+        verifyModelName('@setModelName');
+        verifyAddress('@Html.Raw(setAddress)');
+        verifyFuelPercent('@Html.Raw(setFuelPercent)');
+        verifyFuelPercentText('@Html.Raw(setFuelPercent)', '@Html.Raw(setFuelBalance)');
+        verifyPower('@Html.Raw(setPower)');
+        verifyBattery('@Html.Raw(setBattery)');
+        verifyServerTime('@Html.Raw(setServerTime)');
+        verifyDeviceTime('@Html.Raw(setDeviceTime)');
+        verifyFixTime('@Html.Raw(setFixTime)');
+        verifySpeed('@Html.Raw(setSpeed)');
+        verifyTotalDistance('@Html.Raw(setTotalDistance)');
+        verifyHours('@Html.Raw(setAttrHour)');
+        verifyCarNo('@Html.Raw(setCarNo)');
+        verifyCompanyOwnerName('@Html.Raw(setCompanyOwnerName)');
+    }
+
+    function verifyAttrIgnition(param) {
+
+        if (param != null) {
+
+            if (param == 1) {
+                $('#device-icon-ignition').addClass("gradient-green");
+                $('#device-icon-ignition').removeClass("gradient-red");
+            }
+            else {
+                $('#device-icon-ignition').addClass("gradient-red");
+                $('#device-icon-ignition').removeClass("gradient-green");
+            }
+        }
+        else {
+            $('#device-icon-ignition').addClass("gradient-red");
+            $('#device-icon-ignition').removeClass("gradient-green");
+        }
+    }
+
+    function verifyDeviceName(param) {
+
+        if (param != null) {
+            $('h5#device-text-name').text(param);
+        }
+        else {
+            $('h5#device-text-name').text("N/A");
+
+        }
+    }
+
+    function verifyModelName(param) {
+
+        if (param != null) {
+            $('h5#device-text-model').text(param);
+        }
+        else {
+            $('h5#device-text-model').text("N/A");
+
+        }
+    }
+
+    function verifyAddress(param) {
+
+        if (param != null) {
+            $('#device-text-address').text(param);
+        }
+        else {
+            $('#device-text-address').text(param);
+
+        }
+    }
+
+    function verifyFuelPercent(param) {
+
+        if (param != null) {
+
+            $('#device-fuel-percent').css("width", param + "%");
+
+            if (param <= 20) {
+
+                $('#device-fuel-percent').removeClass("gradient-orange")
+                $('#device-fuel-percent').removeClass("gradient-yellow")
+                $('#device-fuel-percent').removeClass("gradient-green")
+
+                $('#device-fuel-percent').addClass("gradient-red")
+            }
+            else if (param > 20 && param <= 50) {
+
+                $('#device-fuel-percent').removeClass("gradient-red")
+                $('#device-fuel-percent').removeClass("gradient-yellow")
+                $('#device-fuel-percent').removeClass("gradient-green")
+
+                $('#device-fuel-percent').addClass("gradient-orange")
+            }
+            else if (param > 50 && param <= 80) {
+
+                $('#device-fuel-percent').removeClass("gradient-red")
+                $('#device-fuel-percent').removeClass("gradient-orange")
+                $('#device-fuel-percent').removeClass("gradient-green")
+
+                $('#device-fuel-percent').addClass("gradient-yellow")
+            }
+            else if (param >= 80) {
+
+                $('#device-fuel-percent').removeClass("gradient-red")
+                $('#device-fuel-percent').removeClass("gradient-orange")
+                $('#device-fuel-percent').removeClass("gradient-yellow")
+
+                $('#device-fuel-percent').addClass("gradient-green")
+            }
+
+        }
+        else {
+
+        }
+
+    }
+
+    function verifyFuelPercentText(percent,balance) {
+
+        if (percent != null) {
+
+            if (balance == null) {
+
+                balance = "-";
+
+            }
+
+            $('span#device-text-fuel-percent').text(percent + "%" + " (" + balance + " L )");
+
+        }
+        else {
+            $('span#device-text-fuel-percent').text("");
+
+        }
+
+
+    }
+
+    function verifyPower(param) {
+
+        if (param != null) {
+            $('#device-text-power').text(param + " V.");
+        }
+        else {
+            $('#device-text-power').text(param);
+
+        }
+    }
+
+    function verifyBattery(param) {
+
+        if (param != null) {
+            $('#device-text-battery').text(param);
+        }
+        else {
+            $('#device-text-battery').text(param);
+
+        }
+    }
+
+    function verifySpeed(param) {
+
+        if (param != null) {
+            $('#device-text-speed').text(param + "KM. / Hr.");
+        }
+        else {
+            $('#device-text-speed').text(param + "KM. / Hr.");
+
+        }
+    }
+
+
+    function verifyServerTime(param) {
+
+        if (param != null) {
+            $('#device-text-server-time').text(param);
+        }
+        else {
+            $('#device-text-server-time').text(param);
+
+        }
+    }
+
+    function verifyDeviceTime(param) {
+
+        if (param != null) {
+            $('#device-text-device-time').text(param);
+        }
+        else {
+            $('#device-text-device-time').text(param);
+
+        }
+    }
+
+    function verifyFixTime(param) {
+
+        if (param != null) {
+            $('#device-text-fix-time').text(param);
+        }
+        else {
+            $('#device-text-fix-time').text(param);
+
+        }
+    }
+
+    function verifyTotalDistance(param) {
+
+        if (param != null) {
+            $('#device-text-total-distance').text(param.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " KM.");
+        }
+        else {
+            $('#device-text-total-distance').text(param);
+
+        }
+    }
+
+    function verifyHours(param) {
+
+        if (param != null) {
+            $('#device-text-hours').text(param + " Hr.");
+        }
+        else {
+            $('#device-text-hours').text(param);
+
+        }
+    }
+
+    function verifyCarNo(param) {
+
+        if (param != null) {
+            $('#device-text-car-no').text(param);
+        }
+        else {
+            $('#device-text-car-no').text(param);
+
+        }
+    }
+
+    function verifyCompanyOwnerName(param) {
+
+        if (param != null) {
+            $('#device-text-company-owner-name').text(param);
+        }
+        else {
+            $('#device-text-company-owner-name').text(param);
+
+        }
+    }
+
+
+
+
+
+
+
+
+    function verifyImage(param) {
+
+        var result = '';
+
+        result = '@Url.Content("~/customs/longdooMap/pin-001.png")';
+
+        return result;
+
+    }
+
+
+
+</script>

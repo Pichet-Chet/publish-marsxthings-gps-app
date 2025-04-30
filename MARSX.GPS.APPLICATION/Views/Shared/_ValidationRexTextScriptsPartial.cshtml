@@ -1,0 +1,67 @@
+﻿<script type="text/javascript">
+
+    function regEnglishOrNumber(e) {
+
+        var regex = new RegExp("^[a-zA-Z0-9 ]+$");
+
+        var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+
+        if (regex.test(str)) {
+            return true;
+        }
+
+        e.preventDefault();
+
+        return false;
+
+    }
+
+
+    function regThaiOrNumber(e) {
+        var regex = /^[\u0E00-\u0E7F\d\s]+$/;
+
+        var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+
+        if (regex.test(str)) {
+            return true;
+        }
+
+        e.preventDefault();
+
+        return false;
+    }
+
+
+    function regNumber(e) {
+
+        var regex = /^\d+$/;
+
+        var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+
+        if (regex.test(str)) {
+            return true;
+        }
+
+        e.preventDefault();
+
+        return false;
+    }
+
+    function regNumberPhone(e) {
+
+        var regex = /^[\d+]+$/;
+
+        var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+
+        if (regex.test(str)) {
+            return true;
+        }
+
+        e.preventDefault();
+
+        return false;
+    }
+
+
+
+</script>

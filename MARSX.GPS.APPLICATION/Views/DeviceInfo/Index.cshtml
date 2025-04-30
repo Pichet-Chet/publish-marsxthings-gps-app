@@ -1,0 +1,28 @@
+﻿@{
+    ViewData["Title"] = "Device";
+    ViewData["Name"] = "";
+    ViewData["NameLower"] = "device";
+    Layout = null;
+
+}
+
+@model MARSX.GPS.APPLICATION.Models.Customs.MarsxTrack.MasterDeviceView
+
+@await Html.PartialAsync("_Style")
+
+<div class="header-bar header-fixed header-app header-bar-detached header-sticky">
+    <a onclick="$('#device-detail-canvas').offcanvas('hide'); $('#device-detail-canvas').css({ 'z-index': 1 });$('.offcanvas-backdrop').remove()" style="cursor:pointer"><i class="bi bi-caret-left-fill font-11 color-theme ps-2"></i></a>
+    <a onclick="$('#device-detail-canvas').offcanvas('hide'); $('#device-detail-canvas').css({ 'z-index': 1 });$('.offcanvas-backdrop').remove()" style="cursor:pointer" class="header-title color-theme font-13">Back to Pages</a>
+    @*<a href="#" data-bs-toggle="offcanvas" data-bs-target="#menu-language"><i class="bi bi-translate font-13 color-highlight"></i></a>
+        <a data-bs-toggle="offcanvas" data-bs-target="#menu-color" href="#"><i class="bi bi-palette-fill font-13 color-highlight"></i></a>
+        <a href="#" class="show-on-theme-light" data-toggle-theme><i class="bi bi-moon-fill font-13"></i></a>
+        <a href="#" class="show-on-theme-dark" data-toggle-theme><i class="bi bi-lightbulb-fill color-yellow-dark font-13"></i></a>*@
+</div>
+
+@await Html.PartialAsync("_Content", Model)
+
+@*@section Scripts {
+        @await Html.PartialAsync("_Script", Model)
+    }*@
+
+@await Html.PartialAsync("_Script", Model)

@@ -1,0 +1,102 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover" />
+
+    <title>Device Information - MARSTIAN APPLICATION | MARSX THINGS.CO.,LTD</title>
+
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/styles/bootstrap.css")" />
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/fonts/bootstrap-icons.css")" />
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/styles/style.css")" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@tabler/icons-webfont@latest/tabler-icons.min.css" />
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+
+    <link rel="manifest" href="@Url.Content("~/_manifest.json")" />
+    <meta id="theme-check" name="theme-color" content="#FFFFFF" />
+    @*<link rel="apple-touch-icon" sizes="180x180" href="@Url.Content("~/app/icons/icon-192x192.png")" />*@
+
+    <link rel="apple-touch-icon" sizes="180x180" href="@Url.Content("~/customs/favicon/apple-touch-icon.png")">
+    <link rel="icon" type="image/png" sizes="32x32" href="@Url.Content("~/customs/favicon/favicon-32x32.png")">
+    <link rel="icon" type="image/png" sizes="16x16" href="@Url.Content("~/customs/favicon/favicon-16x16.png")">
+    @*<link rel="manifest" href="@Url.Content("~/customs/favicon/site.webmanifest")">*@
+
+    @await RenderSectionAsync("Style", required: false)
+
+
+</head>
+
+
+<body class="theme-light">
+
+    <div id="preloader">
+        <div class="spinner-border color-highlight" role="status"></div>
+    </div>
+
+    <div id="page">
+
+        @*@Html.Partial("Sidebar/_Header.cshtml")*@
+
+        @Html.Partial("Sidebar/_FooterDevice.cshtml")
+
+        @*@Html.Partial("Sidebar/_MenuMain.cshtml")*@
+
+        @*@Html.Partial("Sidebar/_MenuLanguage.cshtml")
+
+            @Html.Partial("Sidebar/_MenuHighlights.cshtml")*@
+
+        @*@Html.Partial("Sidebar/_MenuNotifications.cshtml")*@
+
+
+        @RenderBody()
+
+        @*@Html.Partial("Sidebar/_EndPageContent.cshtml")*@
+
+        <div id="toastArea"></div>
+
+    </div>
+
+    <script src=@Url.Content("~/scripts/bootstrap.min.js")></script>
+    <script src=@Url.Content("~/scripts/custom.js")></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+    @await Html.PartialAsync("_Toast.cshtml")
+
+    @await Html.PartialAsync("_ValidationRexTextScriptsPartial.cshtml")
+
+    <script>
+
+        function redirectToPage(controller) {
+            window.location.href = '@Url.Content("~/")' + controller;
+
+        }
+
+        function getDateTimeNow() {
+
+            var currentDate = new Date();
+
+            var year = currentDate.getFullYear();
+            var month = currentDate.getMonth() + 1;
+            var day = currentDate.getDate();
+            var hours = currentDate.getHours();
+            var minutes = currentDate.getMinutes();
+            var seconds = currentDate.getSeconds();
+
+            var formattedDateTime = pad(day) + '-' + pad(month) + '-' + year + ' ' + pad(hours) + ':' + pad(minutes) + ':' + pad(seconds);
+
+            return formattedDateTime;
+        }
+
+        function pad(number) {
+            return number < 10 ? '0' + number : number;
+        }</script>
+
+</body>
+</html>
+

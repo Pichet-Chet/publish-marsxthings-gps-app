@@ -1,0 +1,185 @@
+﻿@model MARSX.GPS.APPLICATION.Models.Customs.UserInfo
+
+@Html.Hidden("display-first-load", "false")
+
+
+
+<div class="page-content" id="pageContent" style="padding-bottom: 0px;">
+    <div id="mapRender">
+        <div id="map" style="height:100%"></div>
+        <div id="result"></div>
+    </div>
+</div>
+
+
+<div class="offcanvas offcanvas-bottom rounded-m offcanvas-detached" id="map-detail-canvas" style="z-index:500">
+    <div class="content">
+
+        <div class="row justify-content-center">
+            <div class="col-12 col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-xxl-6" id="map-detail-canvas-content">
+                <div class="row text-center mb-n3 d-none">
+                    <a class="col" title="Vynil and Typerwritter">
+                        <img src="@Url.Content("~/customs/images/banner/marsxthings_01_16_2024-1.webp")" class="preload-img img-fluid rounded-l" alt="img" style="max-height:150px;max-width:150px">
+                        <p class="font-600 pb-4"></p>
+                    </a>
+                </div>
+
+                <div class="d-flex pb-2 d-none">
+                    <div class="align-self-center">
+                        <h5 class="mb-n2 font-12 color-highlight font-700 text-uppercase pt-1 d-none">DEVICE INFORMATION</h5>
+                        <h1 class="font-800 font-22 pt-2"> <span id="map-deatil-name"></span>  </h1>
+                        <span id="map-deatil-lat" class="font-8 d-none"></span> <span id="map-deatil-lon" class="font-8 d-none"></span>
+                    </div>
+                    <div class="align-self-center ms-auto">
+                        <a href="#" data-bs-dismiss="offcanvas" class="icon icon-m"><i class="bi bi-x-circle-fill color-red-dark font-18 me-n4"></i></a>
+                    </div>
+                </div>
+
+                <div class="row mb-n3 pb-3">
+
+                    <i class="ti ti-square-rounded-x-filled close-content-detial" id="btn-close-map-content" role="button" onclick="closeCanvasDeviceDetail()"></i>
+
+                    <div class="col-6 col-sm-6 col-md-4 col-lg-3 text-center">
+                        <div id="map-detail-photo">
+                            <img src="@Url.Content("~/customs/images/banner/marsxthings_01_16_2024-1.webp")" class="preload-img img-fluid rounded-l" alt="img">
+                        </div>
+                        <span id="map-deatil-provider-name"></span>
+                    </div>
+
+
+                    <div class="col-6">
+                        <ul class="icon-list">
+
+                            <li class="color-theme">
+                                <i class="ti ti-backhoe color-orange-dark"></i>
+                                <span id="map-deatil-model"></span>
+                            </li>
+
+                            <li class="color-theme">
+                                <i class="ti ti-gauge color-orange-dark"></i>
+                                <span id="map-deatil-odometer"></span>
+                            </li>
+
+                            <li class="color-theme">
+                                <i class="ti ti-clock color-orange-dark"></i>
+                                <span id="map-deatil-clock"></span>
+                            </li>
+
+                            <li class="color-theme">
+                                <i class="ti ti-engine color-orange-dark"></i>
+                                <span id="map-deatil-engine"></span>
+                            </li>
+
+                            <li class="color-theme">
+                                <i class="ti ti-road color-orange-dark"></i>
+                                <span id="map-deatil-distance"></span>
+                            </li>
+
+                            <li class="color-theme d-none">
+                                <i class="ti ti-clock-pin color-orange-dark"></i>
+                                <span id="map-deatil-interval" class="d-none"></span>
+                            </li>
+
+                            <li class="color-theme d-none">
+                                <i class="ti ti-user color-orange-dark"></i>
+                                <span id="map-deatil-contact"></span>
+                            </li>
+
+                            <li class="color-theme d-none">
+                                <i class="ti ti-phone-check color-orange-dark"></i>
+                                <span id="map-deatil-phone"></span>
+                            </li>
+
+                            <li class="color-theme d-none">
+                                <i class="ti ti-message-dots color-orange-dark"></i>
+                                <span id="map-deatil-description"></span>
+                            </li>
+
+                            <li class="color-theme">
+                                <i class="ti ti-gas-station color-orange-dark"></i>
+                                <span id="map-deatil-fuel"></span>
+                            </li>
+                        </ul>
+                    </div>
+
+
+                </div>
+
+                <div class="row text-center pb-2">
+                    <div class="col-12">
+                        <h3 class="font-800 font-18"> <span id="map-deatil-name"></span> </h3>
+                        <i class="ti ti-map-pin color-orange-dark"></i>
+                        <span id="map-deatil-address"></span>
+                    </div>
+                </div>
+
+                <div class="row text-center d-none pt-2">
+                    <div class="col-6 mb-n2">
+                        <a href="#" class="card card-style me-0" style="height:140px">
+                            <div class="card-top mt-4">
+                                <span class="icon icon-l rounded-m gradient-green shadow-bg shadow-bg-xs" style="padding-top:5px;">
+                                    <i class="ti ti-battery-automotive font-24 color-white"></i>
+                                </span>
+                            </div>
+                            <div class="card-bottom mx-3 mb-3">
+                                <div class="progress rounded-xs bg-theme border" style="height:20px" id="map-deatil-battery"></div>
+                                <span id="map-deatil-battery-text" style="color: green"></span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6 mb-n2">
+                        <a href="#" class="card card-style ms-0" style="height:140px">
+                            <div class="card-top mt-4" id="map-deatil-fuel-icon">
+
+                            </div>
+                            <div class="card-bottom mx-3 mb-3">
+                                <div class="progress rounded-xs bg-theme border" style="height:20px" id="map-detail-fuel-percent"></div>
+                                <span id="map-deatil-fuel-text" style="color: green"></span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="row text-center">
+                    <div class="col-12 mb-n2" id="map-detail-read-more">
+
+                    </div>
+                </div>
+                <br />
+
+                @*<div class="divider"></div>*@
+
+                <div class="row text-center">
+                    <div class="col-6">
+                        <a onclick="callGoogleMap()">
+                            <img src="@Url.Content("~/customs/icons/google-map/google-maps-square.png")" class="preload-img img-fluid rounded-l" width="50" alt="img">
+                        </a>
+                    </div>
+
+                    <div class="col-4">
+                        <a onclick="callAppleMap()">
+                            <img src="@Url.Content("~/customs/icons/apple-map/apple-maps-square.png")" class="preload-img img-fluid rounded-l" width="50" alt="img">
+                        </a>
+                    </div>
+
+                    <div class="col-4 d-none">
+                        <div class="btn btn-xxs border-orange-dark color-orange-dark text-start">
+                            <a id="map-deatil-attr-call" class="color-orange-dark text-start">
+                                <i class="ti ti-phone-call"></i> Call
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="offcanvas offcanvas-start" id="device-detail-canvas" style="width:100%">
+    <div class="content" id="render-device-detail-canvas">
+
+
+    </div>
+</div>

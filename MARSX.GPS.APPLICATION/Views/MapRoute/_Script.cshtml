@@ -1,0 +1,99 @@
+﻿<script type="text/javascript">
+
+    var map;
+
+    var currentLanguage;
+
+    $(document).ready(function () {
+
+        var defaultScreenHeight = $(window).height();
+
+        var setMapHeight = (defaultScreenHeight + (defaultScreenHeight * 20 / 100));
+
+        initMap();
+
+        $("#mapRender").css({ 'height': defaultScreenHeight + 'px' });
+
+    })
+
+    function initMap() {
+
+        currentLanguage = sessionStorage.getItem('currentLanguage');
+
+        map = new longdo.Map({
+            placeholder: document.getElementById('map')
+            //ui: longdo.UiComponent.Full,
+            //language: currentLanguage
+        });
+
+        map.Route.placeholder(document.getElementById('result'));
+
+        map.Event.bind('ready', function () { // When map is ready to use
+            mapUiControl();
+            findRoute();
+        });
+
+    }
+
+    function findRoute() {
+
+        var getStartLat = $('#model-start-lat').val();
+        var getStartLon = $('#model-start-lon').val();
+
+        var getEndLat = $('#model-end-lat').val();
+        var getEndLon = $('#model-end-lon').val();
+
+        var Marker = new longdo.Marker(
+            { lon: getStartLon, lat: getStartLat },
+            { title: 'Victory monument', detail: 'I\'m here' }
+        );
+
+        map.Event.bind("ready", function () {
+            map.Route.placeholder(document.getElementById('result'));
+            map.Route.add(Marker);
+            map.Route.add({ lon: getEndLon, lat: getEndLat });
+            map.Route.search();
+        })
+
+    }
+
+    function mapUiControl() {
+        map.Ui.Zoombar.visible(false);
+        map.Ui.DPad.visible(false);
+        map.Ui.Geolocation.visible(false);
+        map.Ui.Toolbar.visible(false);
+        map.Ui.LayerSelector.visible(false);
+        map.Ui.Fullscreen.visible(false);
+        map.Ui.Crosshair.visible(false);
+        map.Ui.Scale.visible(false);
+        map.Ui.Crosshair.visible(false);
+
+        $('.ldmap_notice').addClass("d-none");
+        $('.ldmap_placeholder .ldmap_bottomright').addClass("d-none");
+        //map.location(longdo.LocationMode.Geolocation);
+
+
+        var flagUk = '@Url.Content("~/customs/flag/country/flag-united-kingdom.png")';
+        var flagThai = '@Url.Content("~/customs/flag/country/flag-thailand.png")';
+
+        if (currentLanguage == 'th') {
+
+            $('#flagCountryMap').attr('src', `${flagThai}`);
+
+        } else if (currentLanguage == 'en') {
+
+            $('#flagCountryMap').attr('src', `${flagUk}`);
+
+        }
+
+        map.zoom(4, true);
+
+    }
+
+    function mapRoutePath() {
+
+        $('#map-route-path').offcanvas('show');
+
+    }
+
+</script>

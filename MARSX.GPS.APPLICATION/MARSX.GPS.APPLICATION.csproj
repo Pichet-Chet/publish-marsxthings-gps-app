@@ -1,0 +1,236 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'https' " />
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'http' " />
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Repositories\" />
+    <None Remove="Views\Shared\Sidebar\" />
+    <None Remove="Repositories\AuthenticationRepository\" />
+    <None Remove="Models\Filters\" />
+    <None Remove="Models\Pagination\" />
+    <None Remove="Models\Customs\" />
+    <None Remove="Extension\" />
+    <None Remove="Views\SignIn\" />
+    <None Remove="Models\Response\" />
+    <None Remove="Repositories\TcDevicesRepositories\" />
+    <None Remove="Models\Filters\TrackCar\" />
+    <None Remove="Repositories\TcSessionRepositories\" />
+    <None Remove="Repositories\TcPositionRepositories\" />
+    <None Remove="Repositories\LongdoMapRepositories\" />
+    <None Remove="Models\Longdo\" />
+    <None Remove="Views\DeviceInfo\" />
+    <None Remove="Repositories\SysLogsRepositories\" />
+    <None Remove="Repositories\ManagementAccountRepositories\" />
+    <None Remove="Views\ManagementAccount\" />
+    <None Remove="Repositories\MasterAccountRepository\" />
+    <None Remove="Views\MasterAccount\" />
+    <None Remove="Repositories\MasterCompanyRepositories\" />
+    <None Remove="Repositories\MasterDepartmentRepositories\" />
+    <None Remove="Repositories\MasterPositionRepositories\" />
+    <None Remove="Views\MasterCompany\" />
+    <None Remove="Views\MasterDepartment\" />
+    <None Remove="Views\MasterPosition\" />
+    <None Remove="Repositories\SysGroupRepositories\" />
+    <None Remove="Views\SysGroup\" />
+    <None Remove="Views\MasterDevice\" />
+    <None Remove="Repositories\MasterDeviceRepositories\" />
+    <None Remove="Repositories\MasterDeviceStatusRepositories\" />
+    <None Remove="Repositories\MasterDeviceGroupRepositories\" />
+    <None Remove="Repositories\MasterDeviceCategoryRepositories\" />
+    <None Remove="Views\MasterDeviceStatus\" />
+    <None Remove="Views\MasterDeviceGroup\" />
+    <None Remove="Views\MasterDeviceCategory\" />
+    <None Remove="Views\Shared\SocketControl\" />
+    <None Remove="Repositories\MasterGpsProviderRepositories\" />
+    <None Remove="Views\MasterGpsProvider\" />
+    <None Remove="Models\Customs\MarsxTrack\" />
+    <None Remove="Repositories\MasterGpsStatusRepositories\" />
+    <None Remove="Views\MasterGpsStatus\" />
+    <None Remove="Views\SignInPassCode\" />
+    <None Remove="Views\MapRoute\" />
+    <None Remove="Views\PrivacyPolicy\" />
+    <None Remove="Views\TermsOfService\" />
+    <None Remove="Views\RegisterPassCode\" />
+    <None Remove="Repositories\SysDeviceFavoriteRepositories\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Repositories\" />
+    <Folder Include="Views\Shared\Sidebar\" />
+    <Folder Include="wwwroot\app\" />
+    <Folder Include="wwwroot\fonts\" />
+    <Folder Include="wwwroot\images\" />
+    <Folder Include="wwwroot\php\" />
+    <Folder Include="wwwroot\plugins\" />
+    <Folder Include="wwwroot\scripts\" />
+    <Folder Include="wwwroot\scss\" />
+    <Folder Include="wwwroot\styles\" />
+    <Folder Include="Repositories\AuthenticationRepository\" />
+    <Folder Include="Models\Filters\" />
+    <Folder Include="Models\Pagination\" />
+    <Folder Include="Models\Customs\" />
+    <Folder Include="Extension\" />
+    <Folder Include="wwwroot\customs\" />
+    <Folder Include="wwwroot\customs\images\" />
+    <Folder Include="wwwroot\customs\flag\" />
+    <Folder Include="wwwroot\customs\flag\country\" />
+    <Folder Include="Views\SignIn\" />
+    <Folder Include="Models\Response\" />
+    <Folder Include="Repositories\TcDevicesRepositories\" />
+    <Folder Include="Models\Filters\TrackCar\" />
+    <Folder Include="wwwroot\customs\icons\" />
+    <Folder Include="wwwroot\customs\icons\category-machine\" />
+    <Folder Include="Repositories\TcSessionRepositories\" />
+    <Folder Include="wwwroot\customs\images\banner\" />
+    <Folder Include="Repositories\TcPositionRepositories\" />
+    <Folder Include="Repositories\LongdoMapRepositories\" />
+    <Folder Include="Models\Longdo\" />
+    <Folder Include="Views\DeviceInfo\" />
+    <Folder Include="Repositories\SysLogsRepositories\" />
+    <Folder Include="wwwroot\customs\favicon\" />
+    <Folder Include="Repositories\ManagementAccountRepositories\" />
+    <Folder Include="Views\ManagementAccount\" />
+    <Folder Include="Repositories\MasterAccountRepository\" />
+    <Folder Include="Views\MasterAccount\" />
+    <Folder Include="Repositories\MasterCompanyRepositories\" />
+    <Folder Include="Repositories\MasterDepartmentRepositories\" />
+    <Folder Include="Repositories\MasterPositionRepositories\" />
+    <Folder Include="Views\MasterCompany\" />
+    <Folder Include="Views\MasterDepartment\" />
+    <Folder Include="Views\MasterPosition\" />
+    <Folder Include="Repositories\SysGroupRepositories\" />
+    <Folder Include="Views\SysGroup\" />
+    <Folder Include="Views\MasterDevice\" />
+    <Folder Include="Repositories\MasterDeviceRepositories\" />
+    <Folder Include="Repositories\MasterDeviceStatusRepositories\" />
+    <Folder Include="Repositories\MasterDeviceGroupRepositories\" />
+    <Folder Include="Repositories\MasterDeviceCategoryRepositories\" />
+    <Folder Include="Views\MasterDeviceStatus\" />
+    <Folder Include="Views\MasterDeviceGroup\" />
+    <Folder Include="Views\MasterDeviceCategory\" />
+    <Folder Include="Views\Shared\SocketControl\" />
+    <Folder Include="Repositories\MasterGpsProviderRepositories\" />
+    <Folder Include="Views\MasterGpsProvider\" />
+    <Folder Include="Models\Customs\MarsxTrack\" />
+    <Folder Include="Repositories\MasterGpsStatusRepositories\" />
+    <Folder Include="Views\MasterGpsStatus\" />
+    <Folder Include="wwwroot\customs\longdoMap\" />
+    <Folder Include="Views\SignInPassCode\" />
+    <Folder Include="wwwroot\customs\icons\category-machine\white-black\" />
+    <Folder Include="wwwroot\customs\icons\marker-pin\" />
+    <Folder Include="wwwroot\customs\icons\map-stack\" />
+    <Folder Include="Views\MapRoute\" />
+    <Folder Include="wwwroot\customs\css\" />
+    <Folder Include="wwwroot\customs\LoginPage\" />
+    <Folder Include="Views\PrivacyPolicy\" />
+    <Folder Include="Views\TermsOfService\" />
+    <Folder Include="wwwroot\customs\icons\apple-map\" />
+    <Folder Include="Views\RegisterPassCode\" />
+    <Folder Include="wwwroot\customs\icons\lock\" />
+    <Folder Include="wwwroot\customs\images\model\" />
+    <Folder Include="wwwroot\customs\images\model\excavators\" />
+    <Folder Include="wwwroot\customs\images\model\road-construction\" />
+    <Folder Include="wwwroot\customs\images\model\cranes\" />
+    <Folder Include="wwwroot\customs\images\model\mining-machinery\" />
+    <Folder Include="wwwroot\customs\images\model\concrete-machinery\" />
+    <Folder Include="wwwroot\customs\images\model\port-machinery\" />
+    <Folder Include="wwwroot\customs\images\model\mewp\" />
+    <Folder Include="wwwroot\customs\images\model\piling-machinery\" />
+    <Folder Include="wwwroot\customs\images\model\other-machine\" />
+    <Folder Include="wwwroot\customs\images\model\excavators\XE135B\" />
+    <Folder Include="wwwroot\customs\icons\marker-pin\webp\" />
+    <Folder Include="wwwroot\customs\icons\category-machine\white-black\webp\" />
+    <Folder Include="Repositories\SysDeviceFavoriteRepositories\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="wwwroot\app\" />
+    <Content Remove="wwwroot\fonts\" />
+    <Content Remove="wwwroot\images\" />
+    <Content Remove="wwwroot\php\" />
+    <Content Remove="wwwroot\plugins\" />
+    <Content Remove="wwwroot\scripts\" />
+    <Content Remove="wwwroot\scss\" />
+    <Content Remove="wwwroot\styles\" />
+    <Content Remove="wwwroot\customs\" />
+    <Content Remove="wwwroot\customs\images\" />
+    <Content Remove="wwwroot\customs\flag\" />
+    <Content Remove="wwwroot\customs\flag\country\" />
+    <Content Remove="wwwroot\customs\icons\" />
+    <Content Remove="wwwroot\customs\icons\category-machine\" />
+    <Content Remove="wwwroot\customs\images\banner\" />
+    <Content Remove="wwwroot\customs\favicon\" />
+    <Content Remove="wwwroot\customs\longdoMap\" />
+    <Content Remove="wwwroot\customs\icons\marker-pin\" />
+    <Content Remove="wwwroot\customs\icons\map-stack\" />
+    <Content Remove="wwwroot\customs\css\" />
+    <Content Remove="wwwroot\customs\LoginPage\" />
+    <Content Remove="wwwroot\customs\icons\apple-map\" />
+    <Content Remove="wwwroot\customs\icons\lock\" />
+    <Content Remove="wwwroot\customs\images\model\" />
+    <Content Remove="wwwroot\customs\images\model\excavators\" />
+    <Content Remove="wwwroot\customs\images\model\road-construction\" />
+    <Content Remove="wwwroot\customs\images\model\cranes\" />
+    <Content Remove="wwwroot\customs\images\model\mining-machinery\" />
+    <Content Remove="wwwroot\customs\images\model\concrete-machinery\" />
+    <Content Remove="wwwroot\customs\images\model\port-machinery\" />
+    <Content Remove="wwwroot\customs\images\model\mewp\" />
+    <Content Remove="wwwroot\customs\images\model\piling-machinery\" />
+    <Content Remove="wwwroot\customs\images\model\other-machine\" />
+    <Content Remove="wwwroot\customs\images\model\excavators\XE135B\" />
+    <Content Remove="wwwroot\customs\icons\marker-pin\webp\" />
+    <Content Remove="wwwroot\customs\icons\marker-pin\webp\excavator-pin-wb.webp" />
+    <Content Remove="wwwroot\customs\icons\marker-pin\webp\other-machinery-pin-wb.webp" />
+    <Content Remove="wwwroot\customs\icons\marker-pin\webp\hoisting-machinery-pin.webp" />
+    <Content Remove="wwwroot\customs\icons\marker-pin\webp\mining-machinery-pin-wb.webp" />
+    <Content Remove="wwwroot\customs\icons\marker-pin\webp\question-pin.webp" />
+    <Content Remove="wwwroot\customs\icons\marker-pin\webp\cement-mixer-pin-wb.webp" />
+    <Content Remove="wwwroot\customs\icons\marker-pin\webp\pin.webp" />
+    <Content Remove="wwwroot\customs\icons\marker-pin\webp\mobile-elevating-work-platform-pin.webp" />
+    <Content Remove="wwwroot\customs\icons\marker-pin\webp\car-pin-wb.webp" />
+    <Content Remove="wwwroot\customs\icons\marker-pin\webp\truck-pin-wb.webp" />
+    <Content Remove="wwwroot\customs\icons\marker-pin\webp\port-machinery-pin-wb.webp" />
+    <Content Remove="wwwroot\customs\icons\marker-pin\webp\road-machinery-pin.webp" />
+    <Content Remove="wwwroot\customs\icons\marker-pin\webp\question-pin-wb.webp" />
+    <Content Remove="wwwroot\customs\icons\marker-pin\webp\hoisting-machinery-pin-wb.webp" />
+    <Content Remove="wwwroot\customs\icons\marker-pin\webp\excavator-pin.webp" />
+    <Content Remove="wwwroot\customs\icons\marker-pin\webp\crane-pin.webp" />
+    <Content Remove="wwwroot\customs\icons\marker-pin\webp\mining-machinery-pin.webp" />
+    <Content Remove="wwwroot\customs\icons\marker-pin\webp\car-pin.webp" />
+    <Content Remove="wwwroot\customs\icons\marker-pin\webp\truck-pin.webp" />
+    <Content Remove="wwwroot\customs\icons\marker-pin\webp\pin-wb.webp" />
+    <Content Remove="wwwroot\customs\icons\marker-pin\webp\piling-machinery-pin-wb.webp" />
+    <Content Remove="wwwroot\customs\icons\marker-pin\webp\road-machinery-pin-wb.webp" />
+    <Content Remove="wwwroot\customs\icons\marker-pin\webp\other-machinery-pin.webp" />
+    <Content Remove="wwwroot\customs\icons\marker-pin\webp\port-machinery-pin.webp" />
+    <Content Remove="wwwroot\customs\icons\marker-pin\webp\piling-machinery-pin.webp" />
+    <Content Remove="wwwroot\customs\icons\marker-pin\webp\crane-pin-wb.webp" />
+    <Content Remove="wwwroot\customs\icons\marker-pin\webp\cement-mixer-pin.webp" />
+    <Content Remove="wwwroot\customs\icons\marker-pin\webp\mobile-elevating-work-platform-pin-wb.webp" />
+    <Content Remove="wwwroot\customs\icons\category-machine\white-black\webp\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.WebSockets" Version="2.2.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="System.Management" Version="8.0.0" />
+    <PackageReference Include="System.Net.NetworkInformation" Version="4.3.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Update="Views\Shared\Sidebar\_DeviceList.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+</Project>

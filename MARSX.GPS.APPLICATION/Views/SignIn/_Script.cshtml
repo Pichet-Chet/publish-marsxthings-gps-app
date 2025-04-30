@@ -1,0 +1,287 @@
+﻿<script type="text/javascript">
+
+    var eventPrevious;
+
+    $(document).ready(function () {
+
+        getClientIp();
+
+        getIsp();
+
+        sessionStorage.setItem('currentLanguage', 'en');
+
+        var currentSignIn = sessionStorage.getItem('lastUsername');
+
+        var storedUsername = getCookie("lastUsername");
+
+        eventPrevious = sessionStorage.getItem('eventPrevious');
+
+        if (eventPrevious != "reset-passcode" && eventPrevious != "signin-passcode") {
+
+            if (currentSignIn != null && currentSignIn != '') {
+
+                redirectToPassCodePass(currentSignIn);
+            }
+        }
+
+        if (eventPrevious == "" || eventPrevious == null) {
+            if (storedUsername != null && storedUsername != '') {
+                redirectToPassCodePass(storedUsername);
+            }
+        }
+
+        $("#txtUsername").focus();
+
+    })
+
+
+
+
+
+    function redirectToPassCodePass(currentSignIn) {
+
+        window.location.href = "@Url.Action("Index", "SignInPassCode")?username=" + currentSignIn + "&password=" + "";
+    }
+
+    //[Begin] Submit form
+
+    $(function () {
+
+        $("#formSignIn").on("submit", function () {
+            $('#ui-block').offcanvas('show');
+
+            var form = $(this)[0];
+
+            if (form.checkValidity() === false) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            else {
+
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function (position) {
+
+                    var latitude = position.coords.latitude;
+
+                    var longitude = position.coords.longitude;
+
+                        var param = getModel();
+
+                        param.clientLatitude = latitude;
+                        param.clientLongitude = longitude;
+                        param.clientAgent = navigator.userAgent;
+                        param.clientBrowser = navigator.vendor;
+                        param.clientPlatform = navigator.platform;
+                        param.clientLanguage = navigator.language;
+                        param.clientDevice = navigator.userAgent;
+                        param.clientDateTime = getDateTimeNow();
+
+                        var userAgent = navigator.userAgent;
+
+                        if (userAgent.match(/Android/i)) {
+                            param.clientDevice = "Android";
+                        } else if (userAgent.match(/iPhone|iPad|iPod/i)) {
+                            param.clientDevice = "iOS";
+                        } else if (userAgent.match(/Windows Phone|Windows NT/i)) {
+                            param.clientDevice = "Windows Phone";
+                        } else if (userAgent.match(/Mac/i)) {
+                            param.clientDevice = "MacIntosh";
+                        } else {
+                            param.clientDevice = "Unknown";
+                        }
+
+                        param.clientIp = $('#access-with-ip-address').val();
+                        param.ispName = $('#access-with-isp-name').val();
+                        param.ispCountry = $('#access-with-isp-country').val()
+
+                    $.ajax({
+                        url: '@Url.Action("VerifyAccount", "SignIn")',
+                        data: param,
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (data) {
+
+                            if (data.status == true) {
+
+                                toastSuccess("Hello !! " + param.userName, "Welcome back to marstian application.")
+
+                                sessionStorage.setItem('lastUsername', param.userName);
+
+                                setCookie("lastUsername", param.userName, 30);
+
+                                if (eventPrevious == "reset-passcode") {
+
+                                    sessionStorage.setItem('eventPrevious', '');
+
+                                    sessionStorage.setItem('windowInnerWidth', window.innerWidth);
+
+                                    window.location.href = "@Url.Action("Index","RegisterPassCode")";
+                                }
+                                else {
+                                    if (data.data.passCode == null || data.data.passCode == "") {
+
+                                        window.location.href = "@Url.Action("Index","RegisterPassCode")";
+
+                                    }
+                                    else {
+                                        window.location.href = "@Url.Action("Index","Home")";
+                                    }
+                                }
+
+                            }
+                            else {
+
+                                $('#ui-block').offcanvas("hide");
+
+                                var message = 'N/A';
+
+                                if (data.message == null) {
+
+                                    if (data.exception != null) {
+                                        message = data.exception;
+                                    }
+                                    else {
+                                        message = "Can't connect server.";
+                                    }
+                                }
+                                else {
+                                    message = data.message;
+                                }
+
+                                if (data.data.isActive == true) {
+                                    fnBlockScreenWarning("Warning.", message)
+                                }
+                                else {
+                                    fnBlockScreenAccountBanned(message)
+                                }
+                            }
+                        },
+                        fail: function () {
+                            $('#ui-block').offcanvas("hide");
+                            fnBlockScreenError("Internal Server", "Something's not right. Please contact administrator.");
+                        }
+                    });
+
+                    }, function (error) {
+                        // Handle errors
+                        switch (error.code) {
+                            case error.PERMISSION_DENIED:
+                                $('#ui-block').offcanvas("hide");
+                                toastError("Error", "User denied the request for Geolocation.");
+                                fnBlockScreenGps("");
+                                clearPassCodeValue()
+                                break;
+                            case error.POSITION_UNAVAILABLE:
+                                $('#ui-block').offcanvas("hide");
+                                toastError("Error", "Location information is unavailable.");
+                                fnBlockScreenGps(" or Location information is unavailable.");
+                                clearPassCodeValue()
+                                break;
+                            case error.TIMEOUT:
+                                $('#ui-block').offcanvas("hide");
+                                toastError("Error", "The request to get user location timed out.");
+                                fnBlockScreenGps("or The request to get user location timed out.");
+                                clearPassCodeValue()
+                                break;
+                            case error.UNKNOWN_ERROR:
+                                $('#ui-block').offcanvas("hide");
+                                toastError("Error", "An unknown error occurred.");
+                                fnBlockScreenGps("or An unknown error occurred.");
+                                clearPassCodeValue()
+                                break;
+                        }
+
+                    });
+                }
+
+                else {
+
+                    $('#ui-block').offcanvas('hide');
+
+                    fnBlockScreenError("Error", "Something's not right. Geolocation is not supported by this browser.");
+
+                }
+            }
+        });
+
+    });
+
+    //[End] Submit form
+
+    //[Begin] Element mapping
+
+    function getClientIp() {
+
+        fetch('https://api.ipify.org?format=json')
+            .then(response => response.json())
+            .then(data => {
+                $('#access-with-ip-address').val(data.ip)
+            })
+            .catch(error => {
+                $('#access-with-ip-address').val("Unknown")
+            });
+    }
+
+    function getIsp() {
+        fetch('https://ipinfo.io/json?token=de5677eaf44af5')
+            .then(response => response.json())
+            .then(data => {
+                const country = data.country;
+                const isp = data.org;
+
+                $('#access-with-isp-name').val(isp)
+                $('#access-with-isp-country').val(country)
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                $('#access-with-isp-name').val("Unknown")
+                $('#access-with-isp-country').val("Unknown")
+            });
+    }
+
+    function getModel() {
+
+        var data = new Object();
+
+        data.userName = $('#txtUsername').val();
+        data.password = $('#txtPassword').val();
+
+        return data;
+
+    }
+
+    //[End] Element mapping
+
+
+    function onSelectLanguage(attr) {
+
+        const setOldLanguage = sessionStorage.getItem('currentLanguage');
+
+        sessionStorage.setItem('currentLanguage', attr.id);
+
+        const currentLanguage = sessionStorage.getItem('currentLanguage');
+
+        const elements = document.querySelectorAll('[translate="yes"]');
+
+        elements.forEach(element => {
+
+            var key = element.innerText.trim();
+
+            if (currentLanguage == attr.id) {
+
+                var sourceLang = setOldLanguage;
+                var targetLang = attr.id;
+
+                var url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=" + sourceLang + "&tl=" + targetLang + "&dt=t&q=" + encodeURI(key);
+
+                $.getJSON(url, function (data) {
+                    element.innerHTML = data[0][0][0];
+                });
+            }
+        });
+
+
+    }
+
+
+</script>

@@ -1,0 +1,18 @@
+﻿@{
+    ViewData["Title"] = "Master Gps Provider";
+    ViewData["Name"] = "";
+    ViewData["NameLower"] = "master gps provider";
+    Layout = "~/Views/Shared/_LayoutNoSideBar.cshtml";
+}
+
+@section Style {
+    @await Html.PartialAsync("_Style")
+}
+
+@await Html.PartialAsync("~/Views/Shared/Sidebar/_BackToHome.cshtml")
+
+@await Html.PartialAsync("_Content")
+
+@section Scripts {
+    @await Html.PartialAsync("_Script")
+}

@@ -1,0 +1,1254 @@
+﻿@model MARSX.GPS.APPLICATION.Models.Customs.UserInfo
+
+<script type="text/javascript" src="https://api.longdo.com/map3/?key=@Model.longdoMapKey.ToString()"></script>
+
+<script type="text/javascript">
+
+    var objLatLon = [];
+
+    var map;
+
+    var currentLanguage;
+
+    var defaultScreenHeight;
+
+    var setMapHeight;
+
+    //var connection;
+
+    var currentDate = new Date();
+
+    let setNewId = null;
+
+    var socketUserOnline;
+
+    var socketDeviceDetail;
+
+    $(document).ready(function () {
+
+        initMap();
+
+        getDeviceListOnMap();
+
+        onGetCookie();
+
+        defaultScreenHeight = $(window).height();
+
+        setMapHeight = (defaultScreenHeight + (defaultScreenHeight * 10 / 100));
+
+        $("#mapRender").css({ 'height': setMapHeight + 'px', 'min-height': defaultScreenHeight + 'px' });
+    })
+
+    document.addEventListener('DOMContentLoaded', function () {
+        setTimeout(function () {
+
+            $('.maplibregl-control-container').addClass("d-none");
+            $('.mapboxgl-control-container').css("display", "none");
+
+        }, 1000);
+
+        socketUserOnline = new signalR.HubConnectionBuilder()
+            .withUrl("/SignalROnlineUser")
+            .configureLogging(signalR.LogLevel.Information)
+            .build();
+
+        socketUserOnline.start().then(function () {
+                //console.log("SignalR Connected");
+            }).catch(function (err) {
+            //console.log("SignalR Connection Error: " + err.toString());
+        });
+
+        function getOnlineUserCount() {
+
+            if (socketUserOnline.state === 'Connected') {
+
+                socketUserOnline.invoke("GetOnlineUserCount").then(function (onlineUserCount) {
+
+                    $('span#user-online-count').text(`${onlineUserCount}`)
+
+                }).catch(function (err) {
+                    //console.error("Error getting online user count:", err.toString());
+                });
+            } else {
+
+                //console.warn("Connection is not in the 'Connected' state.");
+
+                socketUserOnline.start().then(function () {
+                    //console.log("SignalR Connected");
+                }).catch(function (err) {
+                    //console.log("SignalR Connection Error: " + err.toString());
+                });
+            }
+        }
+
+        // Call getOnlineUserCount initially and every 5 seconds
+        getOnlineUserCount();
+
+        setInterval(getOnlineUserCount, 1000); // Update every 5 seconds
+
+    });
+
+
+    function initMap() {
+
+        currentLanguage = sessionStorage.getItem('currentLanguage');
+
+        map = new longdo.Map({
+            layer: longdo.Layers.Longdo,
+            placeholder: document.getElementById('map')
+            //ui: longdo.UiComponent.Full,
+            //language: currentLanguage
+        });
+
+
+
+        map.Route.placeholder(document.getElementById('result'));
+
+        map.Event.bind('ready', function () { // When map is ready to use
+            mapUiControl();
+        });
+
+    }
+
+    $('#menu-device').on('hidden.bs.offcanvas', function () {
+
+        $('#section-home-search').addClass('home-search');
+
+        $('#section-home-search').removeClass('home-search-desktop');
+        $('#section-home-search').removeClass('home-search-mobile');
+
+    });
+
+
+    $('#map-detail-canvas').on('hidden.bs.offcanvas', function () {
+
+        socketDeviceDetail.stop()
+            .then(function () {
+                console.log("SignalR connection stopped successfully.");
+                // Nullify the reference to the connection object
+                socketDeviceDetail = null;
+                console.log("SignalR connection object removed.");
+            })
+            .catch(function (err) {
+                console.error("Error stopping SignalR connection:", err);
+            });
+
+
+    });
+
+
+    function getDeviceListOnMap() {
+
+        var filter = new Object();
+
+        filter.isAll = true;
+        filter.id = $('#inputSearchId').val();
+        filter.textSearch = $('#homeInputSearchDevice').val();
+        //filter.masterGpsProviderId = 2;
+
+        var getTagAction = $('#tagAction').val();
+
+        if (getTagAction != null && getTagAction != "") {
+
+            filter.TagAction = getTagAction;
+        }
+
+        $.ajax({
+            type: "Get",
+            contentType: "charset=utf-8",
+            data: filter,
+            url: '@Url.Action("Get", "MasterDevice")',
+            success: function (resp) {
+
+                if (resp.effectRow > 0) {
+
+                    map.Overlays.clear();
+
+                    const getDisplayFirstLoad = $('#display-first-load').val();
+
+                    resp.data.forEach((item) => {
+
+                        if (getDisplayFirstLoad != "true") {
+
+                            var newObj = { lat: item.lat, lon: item.lon };
+
+                            objLatLon.push(newObj);
+
+                            setDeviceListSidebar(item);
+                        }
+
+
+                        var setDeviceCount = item.tagDevice == null ? "N/A" : item.tagDevice.tagCount;
+                        var setDeviceOnline = item.tagDevice == null ? "N/A" : item.tagDevice.tagOnline;
+                        var setDeviceStart = item.tagDevice == null ? "N/A" : item.tagDevice.tagStart;
+
+                        var setDeviceWorking = item.tcAttributesView == null ? false : item.tcAttributesView.ignition == null ? false : item.tcAttributesView.ignition;
+                        var setDeviceGps = item == null ? "offline" : item.gpsStatus == null ? "offline" : item.gpsStatus;
+
+
+                        $('span#tagDeviceCountMobile').text(`${setDeviceCount}`);
+                        $('span#tagDeviceOnlineMobile').text(`${setDeviceOnline}`);
+                        $('span#tagDeviceStartMobile').text(`${setDeviceStart}`);
+
+                        $('span#tagDeviceCountSpan').text(`${setDeviceCount}`);
+                        $('span#tagDeviceOnlineSpan').text(`${setDeviceOnline}`);
+                        $('span#tagDeviceStartSpan').text(`${setDeviceStart}`);
+
+                        if (item != null) {
+
+                            if (item.lat != null && item.lon != null) {
+
+                                var getImage = verifyImage(item);
+
+                                var jsonString = JSON.stringify(item);
+
+                                var setAsParameter = encodeURIComponent(jsonString);
+
+                                if (resp.effectRow == 1) {
+
+                                    map.location({ lon: item.lon, lat: item.lat }, true);
+
+                                    map.zoom(17, true);
+
+                                    var marker = new longdo.Marker({ lon: item.lon, lat: item.lat },
+                                        {
+                                            title: `${item.name}`,
+                                            icon: {
+                                                html: `<image onclick="verifyHtmlInfo('${setAsParameter}')" src="${getImage}" width="35" />`,
+                                                offset: { x: 0, y: -20 }
+                                            }
+                                        });
+
+                                    map.Overlays.add(marker);
+
+                                }
+
+                                else {
+                                    var marker = new longdo.Marker({ lon: item.lon, lat: item.lat },
+                                        {
+                                            title: `${item.name}`,
+                                            icon: {
+                                                html: `<image id="${item.id}" gps="${setDeviceGps}" working="${setDeviceWorking}" name"pin" class="" onclick="verifyHtmlInfo('${setAsParameter}')" src="${getImage}" width="50" /> <div name="ringring" id="${item.id}-ringring" class=""></div> <div name="pincircle" id="${item.id}-circle" class=""></div>`,
+                                                offset: { x: 0, y: 0 }
+                                            }
+                                        });
+
+                                    map.Overlays.add(marker);
+                                }
+                            }
+                        }
+                    })
+
+                    $('#display-first-load').val("true")
+
+                    $('#inputSearchId').val(null);
+
+                    $('#ui-block').offcanvas('hide');
+                }
+                else {
+                    map.Overlays.clear();
+
+                    $('#ui-block').offcanvas('hide');
+                }
+
+                //getDeviceListOnMap();
+            }
+        });
+
+        $('.maplibregl-control-container').addClass("d-none");
+        $('.mapboxgl-control-container').css("display", "none");
+    }
+
+    function setDeviceListSidebar(item) {
+
+        var iconDevice = item.masterDeviceCategory == null ? "" : verifyCategory(item.masterDeviceCategory.nameEn);
+        var iconStatus = verifyStatus(item.gpsStatus);
+        var iconEngine = item.tcAttributesView == null ? verifyEngineDevice("") : item.tcAttributesView.ignition == null ? verifyEngineDevice("") : verifyEngineDevice(item.tcAttributesView.ignition);
+        var textModel = verifyModel(item.model);
+        var textIsFavorite = verifyIsFavorite(item.id,item.isFavorite)
+        //var textImage = item.masterDeviceCategory == null ? verifyImageDevice("") : verifyImageDevice(item.masterDeviceCategory.nameEn);
+
+        var enCodeName = encodeURIComponent(item.name);
+
+        render = `<div role="button" id="record" listdeviceid="${item.id}" onclick="onfocusLatLon(${item.id},${item.lon},${item.lat})">
+
+                    <div class="d-flex px-2 pb-2 pt-2">
+
+                        <div style="margin-top: 10px;">
+                            <div onclick="favoriteDevice(${item.id})">
+                                ${textIsFavorite}
+                            </div>
+                        </div>
+
+                        <div class="d-none" id="setLocation">[${item.id},${item.lat},${item.lon}]</div>
+                        <div class="d-none" id="setIsFavorite">#isFavorite=${item.isFavorite}</div>
+
+                        <div class="ps-2 align-self-center">
+                            <h5 class="ps-1 mb-0 line-height-xs pt-1 font-12" id="name">
+                                ${item.name}
+                            </h5>
+                            <span class="d-none"> ${item.serialNo} ${item.chassis} </span>
+                            <h6 class="ps-1 mb-0 font-400 opacity-100 font-9">
+                                <i class="${iconStatus} opacity-80" style=" border-radius: 5px;"> GPS</i>
+                                <i class="${iconEngine} font-18"></i>
+                                ${textModel}
+                            </h6>
+                        </div>
+                        <div class="ms-auto">
+                            <div onclick="gotoLatLon(${item.id},${item.lon},${item.lat},'${enCodeName}')" data-bs-toggle="dropdown" class="icon icon-m ps-3">
+                                <i role="button" class="ti ti-zoom-scan text-white font-20" style="background-color:#4A89DC;border-radius: 5px;vertical-align:-webkit-baseline-middle;box-shadow:2px 4px 8px rgb(0 27 255 / 65%)"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+
+        
+
+        if (item.isFavorite == 'true' || item.isFavorite == true) {
+
+            var homeSearch = `<div class="btn button-favorite-device-home mt-2" onclick="onfocusLatLon(${item.id},${item.lon},${item.lat})">
+                                <i class="bi bi-star-fill color-yellow-dark"></i>
+                                <span>${item.name}</span>
+                            </div>`;
+
+
+            //$('#render-favorite-device-home').append(homeSearch);
+
+            $('#deviceFovariteList').append(render);
+
+            $('#deviceList').append(render);
+        }
+        else {
+            $('#deviceList').append(render);
+        }
+
+
+    }
+
+    function favoriteDevice(id) {
+
+        console.log(id);
+
+
+        var param = setParameterIsFavorite(id);
+
+        var isFavorite = $('#device-favorite-' + id).attr('attr-' + id + '-favorite');
+
+        var urlAction = '';
+
+        if (isFavorite === 'true' || isFavorite === true) {
+
+            console.log("true : "+ id);
+
+            $('#deviceFovariteListZone #deviceFovariteList #device-favorite-' + id).removeClass("color-yellow-dark");
+            $('#deviceFovariteListZone #deviceFovariteList #device-favorite-' + id).addClass("color-gray-dark");
+            $('#deviceFovariteListZone #deviceFovariteList #device-favorite-' + id).attr('attr-' + id + '-favorite', false);
+
+            $('#device-favorite-' + id).removeClass("color-yellow-dark");
+            $('#device-favorite-' + id).addClass("color-gray-dark");
+            $('#device-favorite-' + id).attr('attr-' + id + '-favorite', false);
+
+            //$('#deviceFovariteListZone #deviceFovariteList [listdeviceid=' + id + ']').remove()
+
+            //$('#deviceList').append($('##deviceFovariteListZone #deviceFovariteList [listdeviceid=' + id + ']'))
+
+            urlAction = '@Url.Action("Delete", "SysDeviceFavorite")';
+
+        }
+        else {
+            console.log("false : " + id);
+
+            $('#deviceFovariteListZone #deviceFovariteList #device-favorite-' + id).removeClass("color-gray-dark");
+            $('#deviceFovariteListZone #deviceFovariteList #device-favorite-' + id).addClass("color-yellow-dark");
+            $('#deviceFovariteListZone #deviceFovariteList #device-favorite-' + id).attr('attr-' + id + '-favorite', true);
+
+            $('#device-favorite-' + id).removeClass("color-gray-dark");
+            $('#device-favorite-' + id).addClass("color-yellow-dark");
+            $('#device-favorite-' + id).attr('attr-' + id + '-favorite', true);
+
+            $('#deviceFovariteListZone #deviceFovariteList').append($('#deviceList [listdeviceid='+ id +']'))
+
+            urlAction = '@Url.Action("Create", "SysDeviceFavorite")';
+
+        }
+
+        $.ajax({
+            url: urlAction,
+            data: param,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                if (data.status == true) {
+
+                }
+                else {
+
+                    toastError(data.type, data.message);
+
+                }
+
+            },
+            fail: function () {
+                toastError("Internal Server", "Please contact administrator.")
+            }
+        });
+
+    }
+
+
+    function setParameterIsFavorite(id) {
+
+        var data = new Object();
+
+        data.id = 0;
+        data.DeviceId = id;
+
+        return data;
+
+    }
+
+
+
+    function mapUiControl() {
+
+
+        map.Ui.Zoombar.visible(false);
+        map.Ui.DPad.visible(false);
+        map.Ui.Geolocation.visible(false);
+        map.Ui.Toolbar.visible(false);
+        map.Ui.LayerSelector.visible(false);
+        map.Ui.Fullscreen.visible(false);
+        map.Ui.Crosshair.visible(false);
+        map.Ui.Scale.visible(false);
+        map.Ui.Crosshair.visible(false);
+        map.Ui.Terrain.visible(false);
+
+        map.Layers.setBase(longdo.Layers.EASY);
+
+        //map.Layers.add(longdo.Layers.TRAFFIC);
+        map.Overlays.load(longdo.Overlays.cameras); // Show Cameras overlay
+        map.Overlays.load(longdo.Overlays.events); // Show Events overlay
+
+        $('.ldmap_notice').addClass("d-none");
+        $('.ldmap_placeholder .ldmap_bottomright').addClass("d-none");
+
+
+        var flagUk = '@Url.Content("~/customs/flag/country/flag-united-kingdom.png")';
+        var flagThai = '@Url.Content("~/customs/flag/country/flag-thailand.png")';
+
+
+
+        if (currentLanguage == 'th') {
+
+            $('#flagCountryMap').attr('src', `${flagThai}`);
+
+        } else if (currentLanguage == 'en') {
+
+            $('#flagCountryMap').attr('src', `${flagUk}`);
+
+        }
+
+        map.zoom(7, true);
+
+    }
+
+
+    function onWebSocket(param) {
+
+        var socket = new WebSocket(param.ws);
+
+        // Event handlers remain the same
+        socket.addEventListener('open', (event) => {
+            console.log('WebSocket connection opened:', event);
+            socket.send('Hello, server!');
+        });
+
+        socket.addEventListener('message', (event) => {
+            console.log('Message from server:', event.data);
+        });
+
+        socket.addEventListener('close', (event) => {
+
+            toastError("WebSocket Close" , "Can't connect to websocket");
+        });
+
+        socket.addEventListener('error', (event) => {
+            toastError("WebSocket Error", "Can't connect to websocket");
+        });
+
+    }
+
+    function onGetCookie() {
+        $.ajax({
+            type: "Get",
+            contentType: "charset=utf-8",
+            url: '@Url.Action("Create", "TcSession")',
+            success: function (resp) {
+
+                if (resp.status == true) {
+
+                    //onWebSocket(resp.data);
+
+                }
+
+            }
+        })
+    }
+
+    function verifyImage(param) {
+
+        var getCurrentType = param.masterDeviceCategory == null ? "" : param.masterDeviceCategory.nameEn;
+
+        var getCurrentIgnition = param.tcAttributesView == null ? false : param.tcAttributesView.ignition == null ? false : param.tcAttributesView.ignition;
+
+        var result = "";
+
+        if (getCurrentType != null && getCurrentType != "") {
+
+            if (getCurrentType.toLowerCase() == "car") {
+
+                if (getCurrentIgnition == true) {
+                    result = '@Url.Content("~/customs/icons/marker-pin/webp/car-pin.webp")';
+                }
+                else {
+                    result = '@Url.Content("~/customs/icons/marker-pin/webp/car-pin-wb.webp")';
+                }
+            }
+            else if (getCurrentType.toLowerCase() == "concrete machinery") {
+
+                if (getCurrentIgnition == true) {
+                    result = '@Url.Content("~/customs/icons/marker-pin/webp/cement-mixer-pin.webp")';
+                }
+                else {
+                    result = '@Url.Content("~/customs/icons/marker-pin/webp/cement-mixer-pin-wb.webp")';
+                }
+
+            }
+            else if (getCurrentType.toLowerCase() == "crane") {
+
+                if (getCurrentIgnition == true) {
+                    result = '@Url.Content("~/customs/icons/marker-pin/webp/crane-pin.webp")';
+                }
+                else {
+                    result = '@Url.Content("~/customs/icons/marker-pin/webp/crane-pin-wb.webp")';
+                }
+
+            }
+            else if (getCurrentType.toLowerCase() == "excavator") {
+
+                if (getCurrentIgnition == true) {
+                    result = '@Url.Content("~/customs/icons/marker-pin/webp/excavator-pin.webp")';
+                }
+                else {
+                    result = '@Url.Content("~/customs/icons/marker-pin/webp/excavator-pin-wb.webp")';
+                }
+
+            }
+            else if (getCurrentType.toLowerCase() == "hoisting machinery") {
+
+                if (getCurrentIgnition == true) {
+                    result = '@Url.Content("~/customs/icons/marker-pin/webp/hoisting-machinery-pin.webp")';
+                }
+                else {
+                    result = '@Url.Content("~/customs/icons/marker-pin/webp/hoisting-machinery-pin-wb.webp")';
+                }
+
+            }
+            else if (getCurrentType.toLowerCase() == "mining machinery") {
+
+                if (getCurrentIgnition == true) {
+                    result = '@Url.Content("~/customs/icons/marker-pin/webp/mining-machinery-pin.webp")';
+                }
+                else {
+                    result = '@Url.Content("~/customs/icons/marker-pin/webp/mining-machinery-pin-wb.webp")';
+                }
+
+            }
+            else if (getCurrentType.toLowerCase() == "mobile elevating work platform") {
+
+                if (getCurrentIgnition == true) {
+                    result = '@Url.Content("~/customs/icons/marker-pin/webp/mobile-elevating-work-platform-pin.webp")';
+                }
+                else {
+                    result = '@Url.Content("~/customs/icons/marker-pin/webp/mobile-elevating-work-platform-pin-wb.webp")';
+                }
+
+            }
+            else if (getCurrentType.toLowerCase() == "other machinery") {
+
+                if (getCurrentIgnition == true) {
+                    result = '@Url.Content("~/customs/icons/marker-pin/webp/other-machinery-pin.webp")';
+                }
+                else {
+                    result = '@Url.Content("~/customs/icons/marker-pin/webp/other-machinery-pin-wb.webp")';
+                }
+
+            }
+            else if (getCurrentType.toLowerCase() == "piling machinery") {
+
+                if (getCurrentIgnition == true) {
+                    result = '@Url.Content("~/customs/icons/marker-pin/webp/piling-machinery-pin.webp")';
+                }
+                else {
+                    result = '@Url.Content("~/customs/icons/marker-pin/webp/piling-machinery-pin-wb.webp")';
+                }
+
+            }
+            else if (getCurrentType.toLowerCase() == "port machinery") {
+
+                if (getCurrentIgnition == true) {
+                    result = '@Url.Content("~/customs/icons/marker-pin/webp/port-machinery-pin.webp")';
+                }
+                else {
+                    result = '@Url.Content("~/customs/icons/marker-pin/webp/port-machinery-pin-wb.webp")';
+                }
+
+            }
+            else if (getCurrentType.toLowerCase() == "road machinery") {
+
+                if (getCurrentIgnition == true) {
+                    result = '@Url.Content("~/customs/icons/marker-pin/webp/road-machinery-pin.webp")';
+                }
+                else {
+                    result = '@Url.Content("~/customs/icons/marker-pin/webp/road-machinery-pin-wb.webp")';
+                }
+
+            }
+            else if (getCurrentType.toLowerCase() == "truck") {
+
+                if (getCurrentIgnition == true) {
+                    result = '@Url.Content("~/customs/icons/marker-pin/webp/truck-pin.webp")';
+                }
+                else {
+                    result = '@Url.Content("~/customs/icons/marker-pin/webp/truck-pin-wb.webp")';
+                }
+
+            }
+            else if (getCurrentType.toLowerCase() == "unknown") {
+
+                if (getCurrentIgnition == true) {
+                    result = '@Url.Content("~/customs/icons/marker-pin/webp/question-pin.webp")';
+                }
+                else {
+                    result = '@Url.Content("~/customs/icons/marker-pin/webp/question-pin-wb.webp")';
+                }
+
+            }
+
+            else {
+
+                if (getCurrentIgnition == true) {
+                    result = '@Url.Content("~/customs/icons/marker-pin/webp/question-pin.webp")';
+                }
+                else {
+                    result = '@Url.Content("~/customs/icons/marker-pin/webp/question-pin-wb.webp")';
+                }
+
+            }
+        }
+
+        else {
+
+            if (getCurrentIgnition == true) {
+                result = '@Url.Content("~/customs/icons/marker-pin/webp/question-pin.webp")';
+            }
+            else {
+                result = '@Url.Content("~/customs/icons/marker-pin/webp/question-pin-wb.webp")';
+            }
+        }
+
+        return result;
+
+    }
+
+    function verifyImageBanner(param) {
+
+        var getCurrentType = param.masterDeviceCategory == null ? "" : param.masterDeviceCategory.nameEn;
+
+        var result = "";
+
+        if (getCurrentType != null && getCurrentType != "") {
+
+            if (getCurrentType.toLowerCase() == "car") {
+
+                result = '@Url.Content("~/customs/icons/category-machine/white-black/webp/car-wb.webp")';
+            }
+            else if (getCurrentType.toLowerCase() == "concrete machinery") {
+
+                result = '@Url.Content("~/customs/icons/category-machine/white-black/webp/cement-mixer-wb.webp")';
+
+            }
+            else if (getCurrentType.toLowerCase() == "crane") {
+
+                result = '@Url.Content("~/customs/icons/category-machine/white-black/webp/crane-wb.webp")';
+
+            }
+            else if (getCurrentType.toLowerCase() == "excavator") {
+
+                result = '@Url.Content("~/customs/icons/category-machine/white-black/webp/excavator-wb.webp")';
+
+            }
+            else if (getCurrentType.toLowerCase() == "hoisting machinery") {
+
+                result = '@Url.Content("~/customs/icons/category-machine/white-black/webp/hoisting-machinery-wb.webp")';
+
+            }
+            else if (getCurrentType.toLowerCase() == "mining machinery") {
+
+                result = '@Url.Content("~/customs/icons/category-machine/white-black/webp/mining-machinery-wb.webp")';
+
+            }
+            else if (getCurrentType.toLowerCase() == "mobile elevating work platform") {
+
+                result = '@Url.Content("~/customs/icons/category-machine/white-black/webp/mobile-elevating-work-platform-wb.webp")';
+
+            }
+            else if (getCurrentType.toLowerCase() == "other machinery") {
+
+                result = '@Url.Content("~/customs/icons/category-machine/white-black/webp/other-machinery-wb.webp")';
+
+            }
+            else if (getCurrentType.toLowerCase() == "piling machinery") {
+
+                result = '@Url.Content("~/customs/icons/category-machine/white-black/webp/piling-machinery-wb.webp")';
+
+            }
+            else if (getCurrentType.toLowerCase() == "port machinery") {
+
+                result = '@Url.Content("~/customs/icons/category-machine/white-black/webp/port-machinery-wb.webp")';
+
+            }
+            else if (getCurrentType.toLowerCase() == "road machinery") {
+
+                result = '@Url.Content("~/customs/icons/category-machine/white-black/webp/road-machinery-wb.webp")';
+
+            }
+            else if (getCurrentType.toLowerCase() == "truck") {
+
+                result = '@Url.Content("~/customs/icons/category-machine/white-black/webp/truck-wb.webp")';
+
+            }
+            else if (getCurrentType.toLowerCase() == "unknown") {
+
+                 result = '@Url.Content("~/customs/icons/category-machine/white-black/webp/question-wb.webp")';
+
+            }
+
+            else {
+
+                result = '@Url.Content("~/customs/icons/category-machine/white-black/webp/question-wb.webp")';
+            }
+        }
+
+        else {
+
+            result = '@Url.Content("~/customs/icons/category-machine/white-black/webp/question-wb.webp")';
+        }
+
+        return result;
+
+    }
+
+
+    function verifyHtmlInfo(param) {
+
+        var decodeParameter = decodeURIComponent(param)
+
+        var obj = JSON.parse(decodeParameter);
+
+        onSocketDeviceDetail(obj.id)
+
+
+        var engineStatus = `<i class="ti ti-settings-question text-warning"></i>`;
+        var batteryPercentage = `<div class="progress-bar gradient-green text-start ps-3 font-600 font-10" role="progressbar"style="width: 0%"></div>`;
+        var batteryPercentageText = `N/A`;
+
+        var fuelIcon = `<span class="icon icon-l rounded-m gradient-red shadow-bg shadow-bg-xs" style="padding-top:5px;"><i class="ti ti-gas-station font-24 color-white"></i></span>`;
+        var fuelPercent = `<div class="progress-bar gradient-red text-start ps-3 font-600 font-10" role="progressbar"style="width: 0%"></div>`;
+        var fuelText = `N/A`;
+
+        var odometer = `N/A`;
+        var hours = `N/A`;
+        var readMore = `<a onclick="toastError('Sorry', 'this function has been under construction.')" translate="yes" class="btn btn-full btn-xxs gradient-blue">Read more.</a>`;
+
+        var distance = `Distance : N/A`;
+        var interval = `Interval : N/A`;
+
+
+        var findImageBanner = verifyImageBanner(obj)
+
+        var defaultImage = `<img src="${findImageBanner}" class="preload-img img-fluid rounded-l" alt="img" style="max-height:150px;max-width:150px">`;
+
+
+        obj.id = obj.name == null ? null : obj.id;
+        obj.name = obj.name == null ? "N/A" : obj.name;
+        obj.model = obj.model == null ? "N/A" : obj.model;
+        obj.address = obj.address == null ? "N/A" : obj.address;
+        obj.contact = obj.contact == null ? "N/A" : obj.contact;
+        obj.phone = obj.phone == null ? "N/A" : obj.phone;
+        obj.description = obj.description == null ? "" : obj.description;
+        obj.modelYear = obj.modelYear == null ? "" : `( ${obj.modelYear} )`;
+
+        defaultImage = obj.photoPath == null ? defaultImage : obj.photoPath == "" ? defaultImage : defaultImage;
+
+
+        odometer = obj.tcAttributesView == null ? odometer : obj.tcAttributesView.odometer == null ? odometer : `${obj.tcAttributesView.odometer}`;
+        hours = obj.tcAttributesView == null ? hours : obj.tcAttributesView.hours == null ? hours : `${obj.tcAttributesView.hours}`;
+
+        engineStatus = obj.tcAttributesView == null ? engineStatus : obj.tcAttributesView.ignition == null ? engineStatus : obj.tcAttributesView.ignition == true ? `<b class="text-success"> Running </b>` : `<b class="text-danger"> Stop </b>`;
+
+        batteryPercentage = obj.tcAttributesView == null ? batteryPercentage : obj.tcAttributesView.battery == null ? batteryPercentage : `<div class="progress-bar gradient-green text-start ps-3 font-600 font-10" role="progressbar"style="width: ${obj.tcAttributesView.battery}%"></div>`;
+        batteryPercentageText = obj.tcAttributesView == null ? batteryPercentageText : obj.tcAttributesView.battery == null ? batteryPercentageText : `${obj.tcAttributesView.battery}`;
+
+        fuelIcon = obj.tcAttributesView == null ? fuelIcon : obj.tcAttributesView.fuel == null ? fuelIcon :
+            obj.tcAttributesView.fuel > 50 ? `<span class="icon icon-l rounded-m gradient-green shadow-bg shadow-bg-xs" style="padding-top:5px;"><i class="ti ti-gas-station font-24 color-white"></i></span>` :
+                obj.tcAttributesView.fuel < 50 && obj.tcAttributesView.fuel > 25 ? `<span class="icon icon-l rounded-m gradient-orange shadow-bg shadow-bg-xs" style="padding-top:5px;"><i class="ti ti-gas-station font-24 color-white"></i></span>` : `<span class="icon icon-l rounded-m gradient-red shadow-bg shadow-bg-xs" style="padding-top:5px;"><i class="ti ti-gas-station font-24 color-white"></i></span>`;
+
+        fuelPercent = obj.tcAttributesView == null ? fuelPercent : obj.tcAttributesView.fuel == null ? fuelPercent :
+            obj.tcAttributesView.fuel > 50 ? `<div class="progress-bar gradient-green text-start ps-3 font-600 font-10" role="progressbar"style="width: ${obj.tcAttributesView.fuel}%"></div>` :
+                obj.tcAttributesView.fuel < 50 && obj.tcAttributesView.fuel > 25 ? `<div class="progress-bar gradient-orange text-start ps-3 font-600 font-10" role="progressbar"style="width: ${obj.tcAttributesView.fuel}%"></div>` : `<div class="progress-bar gradient-red text-start ps-3 font-600 font-10" role="progressbar"style="width: ${obj.tcAttributesView.fuel}%"></div>`;
+
+
+        var getFuelBalance = obj.tcAttributesView == null ? "N/A" : obj.tcAttributesView.fuelLevel == null ? "N/A" : obj.tcAttributesView.fuelLevel + "L.";
+        var getFuelPercent = obj.tcAttributesView == null ? "N/A" : obj.tcAttributesView.fuel == null ? "N/A" : obj.tcAttributesView.fuel.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,') + " %";;
+
+        fuelText = getFuelPercent + " / " + getFuelBalance;
+
+        var redirectToInformation = '@Url.Content("~/DeviceInfo/Index?")' + "deviceId=" + obj.id;
+
+        readMore = obj.id == null ? readMore : `<a onclick="redirectToDeviceInformation('${param}')" translate="yes" class="btn btn-full btn-xxs gradient-blue">Read more.</a>`;
+        //readMore = obj.id == null ? readMore : readMore;
+
+        $('#map-deatil-lat').text(`${obj.lat}`)
+        $('#map-deatil-lon').text(`${obj.lon}`)
+
+        $('span#map-deatil-name').text(`${obj.name}`)
+
+        $('#map-deatil-provider-name').text(`${obj.masterGpsProvider.nameEn}`)
+
+        $('#map-deatil-model').text(`${obj.model}`)
+        $('#map-deatil-odometer').text(`${odometer} KM.`)
+        $('#map-deatil-clock').text(`${hours} Hours.`)
+        $('#map-deatil-address').text(`${obj.address}`)
+        $('#map-deatil-contact').text(`${obj.contact}`)
+        $('#map-deatil-phone').text(`${obj.phone}`)
+        $('#map-deatil-description').text(`${obj.description}`)
+        $('#map-deatil-engine').html(`${engineStatus}`)
+        $('#map-deatil-battery').html(`${batteryPercentage}`)
+        $('#map-deatil-battery-text').html(`${batteryPercentageText}`)
+
+        $('#map-deatil-fuel').html(`${fuelText}`)
+
+        $('#map-deatil-fuel-icon').html(`${fuelIcon}`)
+        $('#map-detail-fuel-percent').html(`${fuelPercent}`)
+        $('#map-deatil-fuel-text').html(`${fuelText}`)
+
+        $('#map-detail-read-more').html(`${readMore}`)
+
+        $('#map-detail-photo').html(`${defaultImage}`)
+
+        if (obj.phone != null && obj.phone != "") {
+
+            $('#map-deatil-attr-call').attr('href', `tel:+${obj.phone}`);
+        }
+
+        $('#map-deatil-distance').html(`${distance}`)
+        $('#map-deatil-interval').html(`${interval}`)
+
+        getCurrentLocation(obj.lat,obj.lon);
+
+        $('#map-detail-canvas').offcanvas('show');
+
+
+        if (window.innerWidth < 768) {
+
+            $('#menu-device').offcanvas('hide');
+
+            $('#btn-close-map-content').addClass('close-content-detial-mobile');
+            $('#btn-close-map-content').removeClass('close-content-detial-desktop');
+
+            $('#map-detail-canvas').removeClass("offcanvas-map-bg-detail");
+            $('#map-detail-canvas-content').removeClass("offcanvas-map-content-detail");
+
+            $('#map-detail-canvas').css({
+                'z-index': 999
+            });
+        }
+        else {
+
+            $('#btn-close-map-content').addClass('close-content-detial-desktop');
+            $('#btn-close-map-content').removeClass('close-content-detial-mobile');
+
+            $('#map-detail-canvas').addClass("offcanvas-map-bg-detail");
+            $('#map-detail-canvas-content').addClass("offcanvas-map-content-detail");
+
+            $('#map-detail-canvas').css({
+                'z-index': 100
+            });
+        }
+
+
+        $('.offcanvas-backdrop').css({
+            opacity: 0,
+            position: 'static'
+        })
+
+
+        $('.pulsating-ringring').removeClass('pulsating-ringring');
+        $('.pulsating-circle').removeClass('pulsating-circle');
+
+
+        $('#' + obj.id + '-ringring').addClass('pulsating-ringring');
+        $('#' + obj.id + '-circle').addClass('pulsating-circle');
+    }
+
+    function getCurrentImageDevice() {
+
+
+    }
+
+    function redirectToDeviceInformation(param) {
+
+        $('.offcanvas-backdrop').remove()
+
+        if (window.innerWidth <= 768) {
+            $('#menu-device').offcanvas('hide');
+
+            $('#menu-device').css({ 'z-index': 1 });
+        }
+        else {
+            $('#menu-device').offcanvas('show');
+
+            $('#menu-device').css({ 'z-index': 999 });
+        }
+
+        $('#device-detail-canvas').offcanvas('show');
+
+        $('#device-detail-canvas').css({ 'z-index': 999 });
+
+        $('.offcanvas-backdrop').css({
+            opacity: 0,
+            position: 'relative'
+        })
+
+        var decodeParameter = decodeURIComponent(param)
+
+        var obj = JSON.parse(decodeParameter);
+
+        $.ajax({
+            type: "POST",
+            data: JSON.stringify(obj),
+            dataType: 'text',
+            contentType: "application/json; charset=utf-8",
+            url: '@Url.Action("Index", "DeviceInfo")',
+            success: function(data) {
+                $('#render-device-detail-canvas').html(data);
+                $('#preloader').remove();
+            }
+        })
+        .fail(function (jqXHR, textStatus, errorThrown) {
+            console.log("AJAX request failed:" + textStatus + errorThrown);
+        // Add code to handle the failure, such as displaying an error message
+        $('#preloader').remove(); // Remove preloader if it was not removed on success
+        });
+
+    }
+
+    function getCurrentLocation(tlat,tlon) {
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                var latitude = position.coords.latitude;
+                var longitude = position.coords.longitude;
+
+                var parameterRouteGuide = `mode=c&type=1&flon=${longitude}&flat=${latitude}&tlon=${tlon}&tlat=${tlat}&key=` + '@Model.longdoMapKey.ToString()';
+
+                var settings = {
+                    "url": "https://api.longdo.com/RouteService/json/route/guide?" + parameterRouteGuide,
+                    "method": "GET",
+                    "timeout": 0,
+                };
+
+                $.ajax(settings).done(function (response) {
+
+                    var calDistance = response.data[0].distance / 1000;
+                    calDistance = '' + calDistance.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,') + " KM.";
+
+                    var calInterval = '' + secondsToHms(response.data[0].interval);
+
+                    $('#map-deatil-distance').html(`${calDistance}`)
+                    $('#map-deatil-interval').html(`${calInterval}`)
+                });
+
+            }, function (error) {
+                // Handle errors
+                switch (error.code) {
+                    case error.PERMISSION_DENIED:
+
+                        $('#ui-block').offcanvas("hide");
+
+                        toastError("Error", "User denied the request for Geolocation.");
+                        fnBlockScreenGps("");
+                        clearPassCodeValue()
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        $('#ui-block').offcanvas("hide");
+                        toastError("Error", "Location information is unavailable.");
+                        fnBlockScreenGps(" or Location information is unavailable.");
+                        clearPassCodeValue()
+                        break;
+                    case error.TIMEOUT:
+                        $('#ui-block').offcanvas("hide");
+                        toastError("Error", "The request to get user location timed out.");
+                        fnBlockScreenGps("or The request to get user location timed out.");
+                        clearPassCodeValue()
+                        break;
+                    case error.UNKNOWN_ERROR:
+                        $('#ui-block').offcanvas("hide");
+                        toastError("Error", "An unknown error occurred.");
+                        fnBlockScreenGps("or An unknown error occurred.");
+                        clearPassCodeValue()
+                        break;
+                }
+
+            });
+        } else {
+            fnBlockScreenError("Error", "Something's not right. Geolocation is not supported by this browser.");
+        }
+
+    }
+
+    function secondsToHms(seconds) {
+        var hours = Math.floor(seconds / 3600);
+        var minutes = Math.floor((seconds % 3600) / 60);
+        var seconds = Math.floor(seconds % 60);
+
+        var timeString = '';
+        if (hours > 0) {
+            timeString += (hours < 10 ? '' : '') + hours + ' Hours ';
+        }
+        timeString += (minutes < 10 ? '0' : '') + minutes + ' Minute ';
+
+        return timeString;
+    }
+
+
+    function closeCanvasDeviceDetail() {
+
+        $('#map-detail-canvas').offcanvas('hide');
+
+        socketDeviceDetail.stop()
+            .then(function () {
+                console.log("SignalR connection stopped successfully.");
+                // Nullify the reference to the connection object
+                socketDeviceDetail = null;
+                console.log("SignalR connection object removed.");
+            })
+            .catch(function (err) {
+                console.error("Error stopping SignalR connection:", err);
+            });
+    }
+
+    function longdoFindRoute() {
+
+        getRoute();
+    }
+
+    function callGoogleMap() {
+
+        var getTargetLat = $('#map-deatil-lat').text();
+
+        var getTargetLon = $('#map-deatil-lon').text();
+
+        var googleMapUrl = `https://www.google.com/maps/?q=` + getTargetLat + "," + getTargetLon;
+
+        window.open(googleMapUrl, '_blank');
+
+    }
+
+    function callAppleMap() {
+
+        var getTargetLat = $('#map-deatil-lat').text();
+
+        var getTargetLon = $('#map-deatil-lon').text();
+
+        var appleMapUrl = `http://maps.apple.com/?ll=` + getTargetLat + "," + getTargetLon;
+
+        window.open(appleMapUrl, '_blank');
+
+    }
+
+    async function rerverseGeocoding(param) {
+
+        var result = '';
+
+        var filter = new Object();
+
+        filter.lat = param.lat;
+        filter.lon = param.lon;
+
+        await $.ajax({
+            type: "Get",
+            contentType: "charset=utf-8",
+            data: filter,
+            url: '@Url.Action("rerverseGeocoding", "LongdoMap")',
+            success: function (resp) {
+
+                if (resp.status == true) {
+
+                    var location = resp.data;
+
+                    result = location.road + " " + location.subdistrict + " " + location.district + " " + location.province + " " + location.postcode + " " + "(" + location.country + ")";
+                }
+
+            }
+        });
+
+        return result;
+    }
+
+    function deviceInfoPage(id, positionId) {
+
+        window.location.href = "@Url.Action("Index","DeviceInfo")?deviceId=" + id + "&positionId=" + positionId;
+    }
+
+
+    function getRoute() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition, showError);
+        } else {
+            toastError("Error","Geolocation is not supported by this browser.");
+        }
+    }
+
+    function showPosition(position) {
+
+        var validatePosition = false;
+
+        var getTargetLat = $('#map-deatil-lat').text();
+
+        var getTargetLon = $('#map-deatil-lon').text();
+
+        validatePosition = getTargetLat == null ? false : getTargetLat == "" ? false : true;
+
+        validatePosition = getTargetLon == null ? false : getTargetLon == "" ? false : true;
+
+        validatePosition = position.coords.latitude == null ? false : position.coords.latitude == "" ? false : true;
+
+        validatePosition = position.coords.longitude == null ? false : position.coords.longitude == "" ? false : true;
+
+        if (validatePosition == true) {
+
+            var paramStr = `?startLat=${position.coords.latitude}&startLon=${position.coords.longitude}&endLat=${getTargetLat}&endLon=${getTargetLon}`
+
+            var urlRoute = '@Url.Content("~/MapRoute")' + paramStr;
+
+            window.location.href = urlRoute;
+
+        }
+
+    }
+
+    function showError(error) {
+        switch (error.code) {
+            case error.PERMISSION_DENIED:
+                console.log("Error", "User denied the request for Geolocation.");
+                break;
+            case error.POSITION_UNAVAILABLE:
+                console.log("Error", "Location information is unavailable.");
+                break;
+            case error.TIMEOUT:
+                console.log("Error", "The request to get user location timed out.");
+                break;
+            case error.UNKNOWN_ERROR:
+                console.log("Error", "An unknown error occurred.");
+                break;
+        }
+    }
+
+
+    // Function to update the id value
+    function updateId(newValue) {
+        setNewId = newValue;
+    }
+
+    function onSocketDeviceDetail(id) {
+
+        socketDeviceDetail = new signalR.HubConnectionBuilder()
+            .withUrl("/SignalRDeviceDetail")
+            .configureLogging(signalR.LogLevel.Information)
+            .build();
+
+        socketDeviceDetail.start().then(function () {
+
+            //console.log("SignalRDeviceDetail Connected");
+
+        }).catch(function (err) {
+
+            //console.log("SignalRDeviceDetail Connection Error: " + err.toString());
+
+        });
+
+        function getDeviceDetail() {
+
+            if (setNewId !== null) {
+
+                if (setNewId == id) {
+
+                    //console.log("setNewId : " + setNewId + " | click id : " + id)
+
+                    socketDeviceDetail.invoke("GetDeviceDeatil", id).then(function (resp) {
+
+                        var obj = resp.data;
+
+                        //console.log(obj.id);
+
+                        var odometer = `N/A`;
+
+                        var hours = `N/A`;
+
+                        var engineStatus = `<i class="ti ti-settings-question text-warning"></i>`;
+
+                        var fuelText = `N/A`;
+
+                        odometer = obj.tcAttributesView == null ? odometer : obj.tcAttributesView.odometer == null ? odometer : `${obj.tcAttributesView.odometer}`;
+
+                        hours = obj.tcAttributesView == null ? hours : obj.tcAttributesView.hours == null ? hours : `${obj.tcAttributesView.hours}`;
+
+                        engineStatus = obj.tcAttributesView == null ? engineStatus : obj.tcAttributesView.ignition == null ? engineStatus : obj.tcAttributesView.ignition == true ? `<b class="text-success"> Running </b>` : `<b class="text-danger"> Stop </b>`;
+
+                        var getFuelBalance = obj.tcAttributesView == null ? "N/A" : obj.tcAttributesView.fuelLevel == null ? "N/A" : obj.tcAttributesView.fuelLevel + "L.";
+
+                        var getFuelPercent = obj.tcAttributesView == null ? "N/A" : obj.tcAttributesView.fuel == null ? "N/A" : obj.tcAttributesView.fuel.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,') + " %";;
+
+                        fuelText = getFuelPercent + " / " + getFuelBalance;
+
+                        $('#map-deatil-odometer').text(`${odometer} KM.`)
+
+                        $('#map-deatil-clock').text(`${hours} Hours.`)
+
+                        $('#map-deatil-engine').html(`${engineStatus}`)
+
+                        $('#map-deatil-fuel').html(`${fuelText}`)
+
+
+                        //console.log("onSocket : Id : " + obj.id + " [ Writed at " + currentDate + " ]");
+
+
+                    }).catch(function (err) {
+                        //console.error("Error getting device detail:", err.toString());
+                    });
+                }
+
+
+            } else {
+                //console.warn("Id is null. Cannot invoke GetDeviceDetail method.");
+            }
+        }
+
+        updateId(id);
+        setInterval(getDeviceDetail, 5000);
+    }
+
+</script>

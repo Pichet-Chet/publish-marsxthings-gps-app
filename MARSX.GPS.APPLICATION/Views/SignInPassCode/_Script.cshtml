@@ -1,0 +1,656 @@
+﻿<script type="text/javascript">
+
+
+    $(document).ready(function () {
+
+        getClientIp();
+
+        sessionStorage.setItem('currentLanguage', 'en');
+
+        var currentSignIn = sessionStorage.getItem('lastUsername');
+
+        var storedUsername = getCookie("lastUsername");
+
+        if (currentSignIn == null || currentSignIn == '') {
+
+            if (storedUsername == null || storedUsername == '') {
+                redirectToPage("SignIn");
+            }
+            else {
+                $('#passCodeAccount').text(storedUsername);
+            }
+        }
+        else {
+            $('#passCodeAccount').text(currentSignIn);
+        }
+
+    })
+
+
+    $(document).keydown(function (event) {
+
+        var getCurrentPassCode1 = $('#inputPassCode1').val();
+        var getCurrentPassCode2 = $('#inputPassCode2').val();
+        var getCurrentPassCode3 = $('#inputPassCode3').val();
+        var getCurrentPassCode4 = $('#inputPassCode4').val();
+        var getCurrentPassCode5 = $('#inputPassCode5').val();
+        var getCurrentPassCode6 = $('#inputPassCode6').val();
+
+        if (event.which === 8 || event.keyCode === 8) {
+
+            if (getCurrentPassCode6 != "" && getCurrentPassCode6 != null) {
+                $('#lb-header-text').addClass("header-text-5")
+                $('#lb-header-text').removeClass("header-text")
+                $('#lb-header-text').removeClass("header-text-1")
+                $('#lb-header-text').removeClass("header-text-2")
+                $('#lb-header-text').removeClass("header-text-3")
+                $('#lb-header-text').removeClass("header-text-4")
+                $('#lb-header-text').removeClass("header-text-6")
+
+                $('#inputPassCode6').val('')
+            }
+            else if (getCurrentPassCode5 != "" && getCurrentPassCode5 != null) {
+                $('#lb-header-text').addClass("header-text-4")
+                $('#lb-header-text').removeClass("header-text")
+                $('#lb-header-text').removeClass("header-text-1")
+                $('#lb-header-text').removeClass("header-text-2")
+                $('#lb-header-text').removeClass("header-text-3")
+                $('#lb-header-text').removeClass("header-text-5")
+                $('#lb-header-text').removeClass("header-text-6")
+
+                $('#inputPassCode5').val('')
+            }
+            else if (getCurrentPassCode4 != "" && getCurrentPassCode4 != null) {
+                $('#lb-header-text').addClass("header-text-3")
+                $('#lb-header-text').removeClass("header-text")
+                $('#lb-header-text').removeClass("header-text-1")
+                $('#lb-header-text').removeClass("header-text-2")
+                $('#lb-header-text').removeClass("header-text-4")
+                $('#lb-header-text').removeClass("header-text-5")
+                $('#lb-header-text').removeClass("header-text-6")
+
+                $('#inputPassCode4').val('')
+            }
+            else if (getCurrentPassCode3 != "" && getCurrentPassCode3 != null) {
+                $('#lb-header-text').addClass("header-text-2")
+                $('#lb-header-text').removeClass("header-text")
+                $('#lb-header-text').removeClass("header-text-1")
+                $('#lb-header-text').removeClass("header-text-3")
+                $('#lb-header-text').removeClass("header-text-4")
+                $('#lb-header-text').removeClass("header-text-5")
+                $('#lb-header-text').removeClass("header-text-6")
+
+                $('#inputPassCode3').val('')
+            }
+            else if (getCurrentPassCode2 != "" && getCurrentPassCode2 != null) {
+                $('#lb-header-text').addClass("header-text-1")
+                $('#lb-header-text').removeClass("header-text")
+                $('#lb-header-text').removeClass("header-text-2")
+                $('#lb-header-text').removeClass("header-text-3")
+                $('#lb-header-text').removeClass("header-text-4")
+                $('#lb-header-text').removeClass("header-text-5")
+                $('#lb-header-text').removeClass("header-text-6")
+
+                $('#inputPassCode2').val('')
+            }
+            else if (getCurrentPassCode1 != "" && getCurrentPassCode1 != null) {
+                $('#lb-header-text').addClass("header-text")
+                $('#lb-header-text').removeClass("header-text-1")
+                $('#lb-header-text').removeClass("header-text-2")
+                $('#lb-header-text').removeClass("header-text-3")
+                $('#lb-header-text').removeClass("header-text-4")
+                $('#lb-header-text').removeClass("header-text-5")
+                $('#lb-header-text').removeClass("header-text-6")
+
+                $('#inputPassCode1').val('')
+            }
+        }
+
+        if (event.key === "1" || event.key === "2" || event.key === "3" || event.key === "4" || event.key === "5" || event.key === "6" || event.key === "7" || event.key === "8" || event.key === "9" || event.key === "0") {
+
+            if (getCurrentPassCode1 == "" || getCurrentPassCode1 == null) {
+
+                $('#lb-header-text').addClass("header-text-1")
+                $('#lb-header-text').removeClass("header-text")
+                $('#lb-header-text').removeClass("header-text-2")
+                $('#lb-header-text').removeClass("header-text-3")
+                $('#lb-header-text').removeClass("header-text-4")
+                $('#lb-header-text').removeClass("header-text-5")
+                $('#lb-header-text').removeClass("header-text-6")
+
+                $('#inputPassCode1').val(event.key)
+            }
+            else if (getCurrentPassCode2 == "" || getCurrentPassCode2 == null) {
+
+                $('#lb-header-text').addClass("header-text-2")
+                $('#lb-header-text').removeClass("header-text")
+                $('#lb-header-text').removeClass("header-text-1")
+                $('#lb-header-text').removeClass("header-text-3")
+                $('#lb-header-text').removeClass("header-text-4")
+                $('#lb-header-text').removeClass("header-text-5")
+                $('#lb-header-text').removeClass("header-text-6")
+
+                $('#inputPassCode2').val(event.key)
+            }
+            else if (getCurrentPassCode3 == "" || getCurrentPassCode3 == null) {
+
+                $('#lb-header-text').addClass("header-text-3")
+                $('#lb-header-text').removeClass("header-text")
+                $('#lb-header-text').removeClass("header-text-1")
+                $('#lb-header-text').removeClass("header-text-2")
+                $('#lb-header-text').removeClass("header-text-4")
+                $('#lb-header-text').removeClass("header-text-5")
+                $('#lb-header-text').removeClass("header-text-6")
+
+                $('#inputPassCode3').val(event.key)
+            }
+            else if (getCurrentPassCode4 == "" || getCurrentPassCode4 == null) {
+
+                $('#lb-header-text').addClass("header-text-4")
+                $('#lb-header-text').removeClass("header-text")
+                $('#lb-header-text').removeClass("header-text-1")
+                $('#lb-header-text').removeClass("header-text-2")
+                $('#lb-header-text').removeClass("header-text-3")
+                $('#lb-header-text').removeClass("header-text-5")
+                $('#lb-header-text').removeClass("header-text-6")
+
+                $('#inputPassCode4').val(event.key)
+            }
+            else if (getCurrentPassCode5 == "" || getCurrentPassCode5 == null) {
+
+                $('#lb-header-text').addClass("header-text-5")
+                $('#lb-header-text').removeClass("header-text")
+                $('#lb-header-text').removeClass("header-text-1")
+                $('#lb-header-text').removeClass("header-text-2")
+                $('#lb-header-text').removeClass("header-text-3")
+                $('#lb-header-text').removeClass("header-text-4")
+                $('#lb-header-text').removeClass("header-text-6")
+
+                $('#inputPassCode5').val(event.key)
+            }
+            else if (getCurrentPassCode6 == "" || getCurrentPassCode6 == null) {
+
+                $('#lb-header-text').addClass("header-text-6")
+                $('#lb-header-text').removeClass("header-text")
+                $('#lb-header-text').removeClass("header-text-1")
+                $('#lb-header-text').removeClass("header-text-2")
+                $('#lb-header-text').removeClass("header-text-3")
+                $('#lb-header-text').removeClass("header-text-4")
+                $('#lb-header-text').removeClass("header-text-5")
+
+                $('#inputPassCode6').val(event.key)
+            }
+        }
+
+        var getPassCode = $('#inputPassCode1').val() + $('#inputPassCode2').val() + $('#inputPassCode3').val() + $('#inputPassCode4').val() + $('#inputPassCode5').val() + $('#inputPassCode6').val();
+
+        if (getPassCode.length == 6) {
+            verifyWithPassCode();
+        }
+    });
+
+
+    function fnResetPassCode() {
+
+        sessionStorage.setItem('eventPrevious', 'reset-passcode');
+
+        window.location.href = '@Url.Content("~/")' + "SignIn";
+    }
+
+
+    function redirectToSignIn() {
+
+        sessionStorage.setItem('eventPrevious', 'signin-passcode');
+
+        window.location.href = '@Url.Content("~/")' + "SignIn";
+    }
+
+
+    function assignPassCodeValue(param) {
+
+        var getCurrentPassCode1 = $('#inputPassCode1').val();
+        var getCurrentPassCode2 = $('#inputPassCode2').val();
+        var getCurrentPassCode3 = $('#inputPassCode3').val();
+        var getCurrentPassCode4 = $('#inputPassCode4').val();
+        var getCurrentPassCode5 = $('#inputPassCode5').val();
+        var getCurrentPassCode6 = $('#inputPassCode6').val();
+
+        if (param != "D" && param != "#") {
+
+            if (getCurrentPassCode1 == "" || getCurrentPassCode1 == null) {
+
+                $('#lb-header-text').addClass("header-text-1")
+                $('#lb-header-text').removeClass("header-text")
+                $('#lb-header-text').removeClass("header-text-2")
+                $('#lb-header-text').removeClass("header-text-3")
+                $('#lb-header-text').removeClass("header-text-4")
+                $('#lb-header-text').removeClass("header-text-5")
+                $('#lb-header-text').removeClass("header-text-6")
+
+                $('#inputPassCode1').val(param)
+            }
+            else if (getCurrentPassCode2 == "" || getCurrentPassCode2 == null) {
+
+                $('#lb-header-text').addClass("header-text-2")
+                $('#lb-header-text').removeClass("header-text")
+                $('#lb-header-text').removeClass("header-text-1")
+                $('#lb-header-text').removeClass("header-text-3")
+                $('#lb-header-text').removeClass("header-text-4")
+                $('#lb-header-text').removeClass("header-text-5")
+                $('#lb-header-text').removeClass("header-text-6")
+
+                $('#inputPassCode2').val(param)
+            }
+            else if (getCurrentPassCode3 == "" || getCurrentPassCode3 == null) {
+
+                $('#lb-header-text').addClass("header-text-3")
+                $('#lb-header-text').removeClass("header-text")
+                $('#lb-header-text').removeClass("header-text-1")
+                $('#lb-header-text').removeClass("header-text-2")
+                $('#lb-header-text').removeClass("header-text-4")
+                $('#lb-header-text').removeClass("header-text-5")
+                $('#lb-header-text').removeClass("header-text-6")
+
+                $('#inputPassCode3').val(param)
+            }
+            else if (getCurrentPassCode4 == "" || getCurrentPassCode4 == null) {
+
+                $('#lb-header-text').addClass("header-text-4")
+                $('#lb-header-text').removeClass("header-text")
+                $('#lb-header-text').removeClass("header-text-1")
+                $('#lb-header-text').removeClass("header-text-2")
+                $('#lb-header-text').removeClass("header-text-3")
+                $('#lb-header-text').removeClass("header-text-5")
+                $('#lb-header-text').removeClass("header-text-6")
+
+                $('#inputPassCode4').val(param)
+            }
+            else if (getCurrentPassCode5 == "" || getCurrentPassCode5 == null) {
+
+                $('#lb-header-text').addClass("header-text-5")
+                $('#lb-header-text').removeClass("header-text")
+                $('#lb-header-text').removeClass("header-text-1")
+                $('#lb-header-text').removeClass("header-text-2")
+                $('#lb-header-text').removeClass("header-text-3")
+                $('#lb-header-text').removeClass("header-text-4")
+                $('#lb-header-text').removeClass("header-text-6")
+
+                $('#inputPassCode5').val(param)
+            }
+            else if (getCurrentPassCode6 == "" || getCurrentPassCode6 == null) {
+
+                $('#lb-header-text').addClass("header-text-6")
+                $('#lb-header-text').removeClass("header-text")
+                $('#lb-header-text').removeClass("header-text-1")
+                $('#lb-header-text').removeClass("header-text-2")
+                $('#lb-header-text').removeClass("header-text-3")
+                $('#lb-header-text').removeClass("header-text-4")
+                $('#lb-header-text').removeClass("header-text-5")
+
+                $('#inputPassCode6').val(param)
+            }
+
+        }
+        else if (param == "D") {
+
+            if (getCurrentPassCode6 == "" || getCurrentPassCode6 == null) {
+                if (getCurrentPassCode5 == "" || getCurrentPassCode5 == null) {
+                    if (getCurrentPassCode4 == "" || getCurrentPassCode4 == null) {
+                        if (getCurrentPassCode3 == "" || getCurrentPassCode3 == null) {
+                            if (getCurrentPassCode2 == "" || getCurrentPassCode2 == null) {
+                                if (getCurrentPassCode1 == "" || getCurrentPassCode1 == null) {
+
+                                }
+                                else {
+
+                                    $('#lb-header-text').addClass("header-text")
+                                    $('#lb-header-text').removeClass("header-text-1")
+                                    $('#lb-header-text').removeClass("header-text-2")
+                                    $('#lb-header-text').removeClass("header-text-3")
+                                    $('#lb-header-text').removeClass("header-text-4")
+                                    $('#lb-header-text').removeClass("header-text-5")
+                                    $('#lb-header-text').removeClass("header-text-6")
+
+                                    $('#inputPassCode1').val("")
+                                }
+                            }
+                            else {
+
+                                $('#lb-header-text').addClass("header-text-1")
+                                $('#lb-header-text').removeClass("header-text")
+                                $('#lb-header-text').removeClass("header-text-2")
+                                $('#lb-header-text').removeClass("header-text-3")
+                                $('#lb-header-text').removeClass("header-text-4")
+                                $('#lb-header-text').removeClass("header-text-5")
+                                $('#lb-header-text').removeClass("header-text-6")
+
+                                $('#inputPassCode2').val("")
+                            }
+                        }
+                        else {
+
+                            $('#lb-header-text').addClass("header-text-2")
+                            $('#lb-header-text').removeClass("header-text")
+                            $('#lb-header-text').removeClass("header-text-1")
+                            $('#lb-header-text').removeClass("header-text-3")
+                            $('#lb-header-text').removeClass("header-text-4")
+                            $('#lb-header-text').removeClass("header-text-5")
+                            $('#lb-header-text').removeClass("header-text-6")
+
+                            $('#inputPassCode3').val("")
+                        }
+                    }
+                    else {
+
+                        $('#lb-header-text').addClass("header-text-3")
+                        $('#lb-header-text').removeClass("header-text")
+                        $('#lb-header-text').removeClass("header-text-1")
+                        $('#lb-header-text').removeClass("header-text-2")
+                        $('#lb-header-text').removeClass("header-text-4")
+                        $('#lb-header-text').removeClass("header-text-5")
+                        $('#lb-header-text').removeClass("header-text-6")
+
+                        $('#inputPassCode4').val("")
+                    }
+                }
+                else {
+
+                    $('#lb-header-text').addClass("header-text-4")
+                    $('#lb-header-text').removeClass("header-text")
+                    $('#lb-header-text').removeClass("header-text-1")
+                    $('#lb-header-text').removeClass("header-text-2")
+                    $('#lb-header-text').removeClass("header-text-3")
+                    $('#lb-header-text').removeClass("header-text-5")
+                    $('#lb-header-text').removeClass("header-text-6")
+
+                    $('#inputPassCode5').val("")
+                }
+            }
+            else {
+
+                $('#lb-header-text').addClass("header-text-5")
+                $('#lb-header-text').removeClass("header-text")
+                $('#lb-header-text').removeClass("header-text-1")
+                $('#lb-header-text').removeClass("header-text-2")
+                $('#lb-header-text').removeClass("header-text-3")
+                $('#lb-header-text').removeClass("header-text-4")
+                $('#lb-header-text').removeClass("header-text-6")
+
+                $('#inputPassCode6').val("")
+            }
+
+        }
+
+        else if (param == "#") {
+
+            clearPassCodeValue()
+        }
+
+        var getPassCode = $('#inputPassCode1').val() + $('#inputPassCode2').val() + $('#inputPassCode3').val() + $('#inputPassCode4').val() + $('#inputPassCode5').val() + $('#inputPassCode6').val();
+
+        if (getPassCode.length == 6)
+        {
+            verifyWithPassCode();
+        }
+
+    }
+
+    function clearPassCodeValue() {
+
+        $('#inputPassCode6').val("");
+        $('#inputPassCode5').val("");
+        $('#inputPassCode4').val("");
+        $('#inputPassCode3').val("");
+        $('#inputPassCode2').val("");
+        $('#inputPassCode1').val("");
+
+        $('#lb-header-text').addClass("header-text")
+        $('#lb-header-text').removeClass("header-text-1")
+        $('#lb-header-text').removeClass("header-text-2")
+        $('#lb-header-text').removeClass("header-text-3")
+        $('#lb-header-text').removeClass("header-text-4")
+        $('#lb-header-text').removeClass("header-text-5")
+        $('#lb-header-text').removeClass("header-text-6")
+    }
+
+
+    //[Begin] Submit form
+
+    function verifyWithPassCode() {
+
+        var getCurrentPassCode1 = $('#inputPassCode1').val();
+        var getCurrentPassCode2 = $('#inputPassCode2').val();
+        var getCurrentPassCode3 = $('#inputPassCode3').val();
+        var getCurrentPassCode4 = $('#inputPassCode4').val();
+        var getCurrentPassCode5 = $('#inputPassCode5').val();
+        var getCurrentPassCode6 = $('#inputPassCode6').val();
+
+        var getPassCode = getCurrentPassCode1 + getCurrentPassCode2 + getCurrentPassCode3 + getCurrentPassCode4 + getCurrentPassCode5 + getCurrentPassCode6;
+
+        if (getPassCode.length === 6) {
+
+            $('#ui-block').offcanvas("show");
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+
+                    var latitude = position.coords.latitude;
+
+                    var longitude = position.coords.longitude;
+
+                        var param = getModel();
+
+                        param.clientLatitude = latitude;
+                        param.clientLongitude = longitude;
+                        param.clientAgent = navigator.userAgent;
+                        param.clientBrowser = navigator.vendor;
+                        param.clientPlatform = navigator.platform;
+                        param.clientLanguage = navigator.language;
+                        param.clientDevice = navigator.userAgent;
+                        param.clientDateTime = getDateTimeNow();
+
+                        var userAgent = navigator.userAgent;
+
+                        if (userAgent.match(/Android/i)) {
+                            param.clientDevice = "Android";
+                        } else if (userAgent.match(/iPhone|iPad|iPod/i)) {
+                            param.clientDevice = "iOS";
+                        } else if (userAgent.match(/Windows Phone|Windows NT/i)) {
+                            param.clientDevice = "Windows Phone";
+                        } else if (userAgent.match(/Mac/i)) {
+                            param.clientDevice = "MacIntosh";
+                        } else {
+                            param.clientDevice = "Unknown";
+                        }
+
+                        param.clientIp = $('#access-with-ip-address').val()
+
+                        $.ajax({
+                            url: '@Url.Action("VerifyAccount", "SignInPassCode")',
+                            data: param,
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            success: function (data) {
+
+                                if (data.status == true) {
+
+                                    toastSuccess("Hello !! " + param.userName, "Welcome back to marstian application.")
+
+                                    sessionStorage.setItem('lastUsername', param.userName);
+
+                                    sessionStorage.setItem('windowInnerWidth', window.innerWidth);
+
+                                    window.location.href = "@Url.Action("Index","Home")";
+                                }
+                                else {
+
+                                    $('#ui-block').offcanvas("hide");
+
+                                    var message = 'N/A';
+
+                                    if (data.message == null) {
+
+                                        if (data.exception != null) {
+                                            message = data.exception;
+                                        }
+                                        else {
+                                            message = "Can't connect server.";
+                                        }
+                                    }
+                                    else {
+                                        message = data.message;
+                                    }
+
+                                    if (data.data.isActive == true) {
+                                        fnBlockScreenWarning("Warning.", message)
+                                    }
+                                    else {
+                                        fnBlockScreenAccountBanned(message)
+                                    }
+                                    
+
+                                    $('#inputPassCode6').val("");
+                                    $('#inputPassCode5').val("");
+                                    $('#inputPassCode4').val("");
+                                    $('#inputPassCode3').val("");
+                                    $('#inputPassCode2').val("");
+                                    $('#inputPassCode1').val("");
+
+                                    $('#lb-header-text').addClass("header-text")
+                                    $('#lb-header-text').removeClass("header-text-1")
+                                    $('#lb-header-text').removeClass("header-text-2")
+                                    $('#lb-header-text').removeClass("header-text-3")
+                                    $('#lb-header-text').removeClass("header-text-4")
+                                    $('#lb-header-text').removeClass("header-text-5")
+                                    $('#lb-header-text').removeClass("header-text-6")
+                                }
+
+
+                            },
+                            fail: function () {
+                                fnBlockScreenError("Internal Server" , "Please contact administrator.")
+                            }
+                        });
+
+                }, function (error) {
+
+
+                        // Handle errors
+                        switch (error.code) {
+                            case error.PERMISSION_DENIED:
+                                $('#ui-block').offcanvas("hide");
+                                toastError("Error", "User denied the request for Geolocation.");
+                                fnBlockScreenGps("");
+                                clearPassCodeValue()
+                                break;
+                            case error.POSITION_UNAVAILABLE:
+                                $('#ui-block').offcanvas("hide");
+                                toastError("Error", "Location information is unavailable.");
+                                fnBlockScreenGps(" or Location information is unavailable.");
+                                clearPassCodeValue()
+                                break;
+                            case error.TIMEOUT:
+                                $('#ui-block').offcanvas("hide");
+                                toastError("Error", "The request to get user location timed out.");
+                                fnBlockScreenGps("or The request to get user location timed out.");
+                                clearPassCodeValue()
+                                break;
+                            case error.UNKNOWN_ERROR:
+                                $('#ui-block').offcanvas("hide");
+                                toastError("Error", "An unknown error occurred.");
+                                fnBlockScreenGps("or An unknown error occurred.");
+                                clearPassCodeValue()
+                                break;
+                        }
+
+                    });
+                }
+
+            else {
+
+
+
+                fnBlockScreenError("Error", "Something's not right. Geolocation is not supported by this browser.");
+            }
+
+        }
+
+        else {
+
+
+
+            toastError("Warning.", "Not Pass");
+        }
+
+    }
+
+    //[End] Submit form
+
+    //[Begin] Element mapping
+
+    function getClientIp() {
+
+        fetch('https://api.ipify.org?format=json')
+            .then(response => response.json())
+            .then(data => {
+                $('#access-with-ip-address').val(data.ip)
+            })
+            .catch(error => {
+                $('#access-with-ip-address').val("Unknown")
+            });
+    }
+
+    function getModel() {
+
+        var data = new Object();
+
+        var getCurrentPassCode1 = $('#inputPassCode1').val();
+        var getCurrentPassCode2 = $('#inputPassCode2').val();
+        var getCurrentPassCode3 = $('#inputPassCode3').val();
+        var getCurrentPassCode4 = $('#inputPassCode4').val();
+        var getCurrentPassCode5 = $('#inputPassCode5').val();
+        var getCurrentPassCode6 = $('#inputPassCode6').val();
+
+        data.userName = $('#passCodeAccount').text();
+
+        data.passCode = getCurrentPassCode1 + getCurrentPassCode2 + getCurrentPassCode3 + getCurrentPassCode4 + getCurrentPassCode5 + getCurrentPassCode6;
+
+        return data;
+
+    }
+
+
+
+    //[End] Element mapping
+
+
+    function onSelectLanguage(attr) {
+
+        const setOldLanguage = sessionStorage.getItem('currentLanguage');
+
+        sessionStorage.setItem('currentLanguage', attr.id);
+
+        const currentLanguage = sessionStorage.getItem('currentLanguage');
+
+        const elements = document.querySelectorAll('[translate="yes"]');
+
+        elements.forEach(element => {
+
+            var key = element.innerText.trim();
+
+            if (currentLanguage == attr.id) {
+
+                var sourceLang = setOldLanguage;
+                var targetLang = attr.id;
+
+                var url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=" + sourceLang + "&tl=" + targetLang + "&dt=t&q=" + encodeURI(key);
+
+                $.getJSON(url, function (data) {
+                    element.innerHTML = data[0][0][0];
+                });
+            }
+        });
+    }
+
+
+</script>

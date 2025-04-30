@@ -1,0 +1,56 @@
+﻿@model MARSX.GPS.APPLICATION.Models.Longdo.MapRoute
+
+@Html.Hidden("model-start-lat", Model.startLat)
+@Html.Hidden("model-start-lon", Model.startLon)
+
+@Html.Hidden("model-end-lat", Model.endLat)
+@Html.Hidden("model-end-lon", Model.endLon)
+
+<div role="button" class="map-stack-floating" data-bs-toggle="offcanvas" data-bs-target="#menu-map-stack">
+    <i class="bi bi-stack font-20"></i>
+</div>
+
+<div role="button" onclick="map.zoom(true, true);" class="zoom-in-floating">
+    <i class="bi bi-plus-circle font-30"></i>
+</div>
+
+<div role="button" onclick="map.zoom(false, true);" class="zoom-out-floating">
+    <i class="bi bi-dash-circle font-30"></i>
+</div>
+
+
+
+<div class="icon-marsx">
+    <img src="@Url.Content("~/customs/images/logomarsx-p-500.png")" width="100" />
+</div>
+
+
+
+
+<div class="page-content" id="pageContent" style="padding-bottom: 0px;">
+
+    <div id="mapRender" style="min-height:1200px">
+        <div id="map" style="height:100%"></div>
+        <div id="result"></div>
+    </div>
+
+</div>
+
+
+<div class="offcanvas offcanvas-bottom rounded-m offcanvas-detached" id="map-route-path">
+    <div class="content">
+        <div class="d-flex pb-2">
+            <div class="align-self-center">
+                <h5 class="mb-n2 font-12 color-highlight font-700 text-uppercase pt-1">Just tap to</h5>
+                <h1 class="font-800 font-22 pt-2">Route</h1>
+            </div>
+            <div class="align-self-center ms-auto">
+                <a href="#" data-bs-dismiss="offcanvas" class="icon icon-m"><i class="bi bi-x-circle-fill color-red-dark font-18 me-n4"></i></a>
+            </div>
+        </div>
+        <div class="divider"></div>
+        <div class="row text-center row-cols-3 mb-n3">
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,28 @@
+﻿@{
+    ViewData["Title"] = "Route | ";
+    ViewData["Name"] = "";
+    ViewData["NameLower"] = "route";
+    Layout = "~/Views/Shared/_LayoutBlank.cshtml";
+
+}
+
+
+@section Style {
+    @await Html.PartialAsync("_Style")
+}
+
+<div class="header-bar header-fixed header-app header-bar-detached">
+    <a onclick="redirectToPage('Home')" style="cursor:pointer"><i class="bi bi-caret-left-fill font-11 color-theme ps-2"></i></a>
+    <div class="header-title color-theme font-13">
+        ตำแหน่งของคุณ >> เครื่องจักร ???
+    </div>
+    <div class="pe-3" onclick="mapRoutePath()">
+        <i class="bi bi-list-ul font-20 color-theme"></i>
+    </div>
+</div>
+
+@await Html.PartialAsync("_Content")
+
+@section Scripts {
+    @await Html.PartialAsync("_Script")
+}

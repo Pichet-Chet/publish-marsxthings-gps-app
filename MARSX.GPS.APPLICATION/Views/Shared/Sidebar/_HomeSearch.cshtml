@@ -1,0 +1,569 @@
+﻿@Html.Hidden("tagAction", "")
+
+
+@*<div role="button" class="change-map-language" data-bs-toggle="offcanvas" data-bs-target="#menu-language">
+        <img width="50" id="flagCountryMap" src="@Url.Content("~/customs/flag/country/flag-united-kingdom.png")" class="preload-img img-fluid rounded-circle entered loaded" alt="img" data-ll-status="loaded">
+    </div>*@
+
+<div role="button" class="map-stack-floating" data-bs-toggle="offcanvas" data-bs-target="#menu-map-stack">
+    <i class="bi bi-stack font-20"></i>
+</div>
+
+<div role="button" onclick="fnResetScreen()" class="get-reset-screen-floating">
+    <i class="bi bi-arrow-repeat font-20"></i>
+</div>
+
+<div role="button" onclick="getMyLocation()" class="get-geolocation-floating">
+    <i class="ti ti-current-location font-20"></i>
+</div>
+
+<div role="button" onclick="map.zoom(true, true);" class="zoom-in-floating d-none">
+    <i class="bi bi-plus-circle font-30"></i>
+</div>
+
+<div role="button" onclick="map.zoom(false, true);" class="zoom-out-floating d-none">
+    <i class="bi bi-dash-circle font-30"></i>
+</div>
+
+
+<div role="button" class="home-floating" data-bs-toggle="offcanvas" data-bs-target="#menu-main">
+    <i class="bi bi-list font-30"></i>
+</div>
+
+<div role="button" onclick="clearSearch()" class="cancel-search-floating">
+    <i class="bi bi-x font-40"></i>
+</div>
+
+
+<div id="section-home-search" class="home-search">
+
+    <div class="form-custom form-label form-icon mb-3 home-search-input">
+        <i class="bi bi-list font-20" onclick="getDeviceList()" id="icon-home-search"></i>
+        @*<input type="text" class="form-control" id="homeInputSearchDevice" placeholder="Search you device" style="border-radius: 40px;background-color:white" onkeyup="onHomeFilter()">*@
+        <input type="text" class="form-control" id="homeInputSearchDevice" placeholder="Search you device" style="border-radius: 40px;background-color:white" readonly="readonly" onclick="getDeviceList()">
+
+        <label for="c1" class="color-theme d-none">Devices</label>
+    </div>
+
+
+    <div class="desktop-display">
+
+        <div class="btn button-favorite-device-home mt-2" onclick="onFilterIsFavorite()">
+            <i class="bi bi-star-fill color-yellow-dark"></i>
+            <span>Favorite Only</span>
+        </div>
+
+        <div class="btn button-count-device" onclick="writeTagAction('ALL')">
+            <span>All Device is <span id="tagDeviceCountSpan">N/A</span> </span>
+        </div>
+
+        <div class="btn button-count-device" onclick="writeTagAction('POWER-ON')">
+            <span>Working is <span id="tagDeviceStartSpan">N/A</span> </span>
+        </div>
+
+        @*<div id="render-favorite-device-home" class="pt-1">
+
+            <div class="btn button-favorite-device-home mt-2" onclick="onFilterIsFavorite()">
+                <i class="bi bi-star-fill color-yellow-dark"></i>
+                <span>Favorite Only</span>
+            </div>
+
+        </div>*@
+
+        @*<div class="btn btn-xxs btn-3d bg-orange-light border-red-dark text-start" onclick="writeTagAction('ALL')" style=" width: 140px; ">
+            <i class="ti ti-backhoe pe-3 ms-n1"></i> ALL :
+            <span id="tagDeviceCountSpan">N/A</span>
+        </div>
+
+        <div class="btn btn-xxs btn-3d bg-orange-light border-red-dark text-start d-none" onclick="writeTagAction('GPS-ONLINE')" style=" width: 140px; ">
+            <i class="bi bi-person-circle pe-3 ms-n1"></i> Online
+            <span id="tagDeviceOnlineSpan">N/A</span>
+        </div>
+
+        <div class="btn btn-xxs btn-3d bg-orange-light border-red-dark text-start" onclick="writeTagAction('POWER-ON')" style=" width: 140px; ">
+            <i class="ti ti-engine pe-3 ms-n1"></i> Working :
+            <span id="tagDeviceStartSpan">N/A</span>
+        </div>*@
+
+    </div>
+
+    <div class="mobile-display d-none">
+        @*<div class="splide double-slider slider-no-dots slider-no-arrows slider-visible-center tag-device-master-head" id="double-slider-2">
+            <div class="splide__track">
+                <div class="splide__list">
+                    <div class="splide__slide">
+                        <div class="btn btn-xxs btn-3d bg-orange-light border-red-dark text-start" onclick="writeTagAction('ALL')" style=" width: 140px; ">
+                            <i class="bi bi-person-circle pe-3 ms-n1"></i> ALL :
+                            <span id="tagDeviceCountMobile">N/A</span>
+                        </div>
+                    </div>
+                    <div class="splide__slide">
+                        <div class="btn btn-xxs btn-3d bg-orange-light border-red-dark text-start  d-none" onclick="writeTagAction('GPS-ONLINE')" style=" width: 140px; ">
+                            <i class="bi bi-person-circle pe-3 ms-n1"></i> Online
+                            <span id="tagDeviceOnlineMobile">N/A</span>
+                        </div>
+                    </div>
+                    <div class="splide__slide">
+                        <div class="btn btn-xxs btn-3d bg-orange-light border-red-dark text-start" onclick="writeTagAction('POWER-ON')" style=" width: 140px; ">
+                            <i class="bi bi-person-circle pe-3 ms-n1"></i> Working :
+                            <span id="tagDeviceStartMobile">N/A</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>*@
+    </div>
+
+</div>
+
+
+
+
+<div class="icon-marsx">
+    <img src="@Url.Content("~/customs/images/logomarsx-p-500.png")" width="100" />
+</div>
+
+<script type="text/javascript">
+
+
+    function onHomeFilter() {
+        $('#txtSearchDevices').val($('#homeInputSearchDevice').val());
+
+
+        onFilter();
+    }
+
+    function onFilterIsFavorite() {
+
+        $('#txtSearchDevices').val("#isFavorite=true");
+
+        $('#homeInputSearchDevice').css("color", "white");
+
+        onFilter();
+    }
+
+    function getMyLocation() {
+
+
+        $('#ui-block-text').offcanvas('show');
+
+        var latitude;
+
+        var longitude;
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+
+                latitude = position.coords.latitude;
+
+                longitude = position.coords.longitude;
+
+                map.location({ lon: longitude, lat: latitude }, true);
+
+                
+
+                setTimeout(function () {
+
+                    var marker = new longdo.Marker({ lon: longitude, lat: latitude },
+                        {
+                            title: 'Your current here.',
+                            icon: {
+                                html: `<div class="pulsating-ringring-current"> </div> <div class="pulsating-circle-current"></div> `,
+                                offset: { x: 0, y: 0 }
+                            }
+                        });
+
+                    map.Overlays.add(marker);
+
+                    map.zoom(17, true);
+
+                    $('#ui-block-text').offcanvas("hide");
+                    // Your code here
+                }, 3500);
+
+            }, function (error) {
+
+                // Handle errors
+                switch (error.code) {
+                    case error.PERMISSION_DENIED:
+                        $('#ui-block-text').offcanvas("hide");
+                        toastError("Error", "User denied the request for Geolocation.");
+                        fnBlockScreenGps("");
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        $('#ui-block-text').offcanvas("hide");
+                        toastError("Error", "Location information is unavailable.");
+                        fnBlockScreenGps(" or Location information is unavailable.");
+                        break;
+                    case error.TIMEOUT:
+                        $('#ui-block-text').offcanvas("hide");
+                        toastError("Error", "The request to get user location timed out.");
+                        fnBlockScreenGps("or The request to get user location timed out.");
+                        break;
+                    case error.UNKNOWN_ERROR:
+                        $('#ui-block-text').offcanvas("hide");
+                        toastError("Error", "An unknown error occurred.");
+                        fnBlockScreenGps("or An unknown error occurred.");
+                        break;
+                }
+            });
+        } else {
+            $('#ui-block-text').offcanvas('hide');
+
+            fnBlockScreenError("Error", "Something's not right. Geolocation is not supported by this browser.");
+        }
+
+    }
+
+    function backToHome() {
+        window.location.href = "@Url.Action("Index","Home")";
+    }
+
+    function openDeviceList() {
+        $('#menu-device').offcanvas('show');
+    }
+
+    function clearSearch() {
+
+        $('#homeInputSearchDevice').val("");
+
+        $('#inputSearchId').val("");
+
+        $('span#tagDeviceCountMobile').text(`N/A`);
+        $('span#tagDeviceOnlineMobile').text(`N/A`);
+        $('span#tagDeviceStartMobile').text(`N/A`);
+
+        $('#tagAction').val(`ALL`);
+
+        $('div #map div div img').removeClass('d-none')
+
+        $('.pulsating-ringring').removeClass('pulsating-ringring');
+        $('.pulsating-circle').removeClass('pulsating-circle');
+
+        //map.zoom(4, true);
+
+    }
+
+    function writeTagAction(action) {
+        $('#tagAction').val(`${action}`);
+
+        if (action == 'ALL') {
+            $('div#map div div img').removeClass('d-none');
+
+            $('#txtSearchDevices').val("");
+
+            $('#homeInputSearchDevice').css("color", "black");
+
+            onFilter();
+        }
+        else if (action == 'GPS-ONLINE') {
+            $('div#map div div img[gps="online"]').removeClass('d-none');
+            $('div#map div div img[gps="offline"]').addClass('d-none');
+        }
+        else if (action == 'POWER-ON') {
+
+            $('div#map div div img[working="true"]').removeClass('d-none');
+            $('div#map div div img[working="false"]').addClass('d-none');
+        }
+        else {
+            $('div#map div div img').removeClass('d-none');
+        }
+
+        /*getDeviceListOnMap();*/
+    }
+
+    function fnResetScreen() {
+        location.reload();
+    }
+
+
+</script>
+
+
+<style>
+
+
+    .tag-device-master-head {
+        bottom: 10px;
+    }
+
+    .tag-device-master-item {
+        background-color: white;
+        border-radius: 10px;
+        padding: 5px;
+    }
+
+
+
+    .icon-marsx {
+        bottom: 5px;
+        position: fixed;
+        right: 70px;
+        opacity: 0.3;
+        z-index: 999;
+    }
+
+
+    .home-search {
+        /*background-color: white; */
+        /* border-radius: 10px; */
+        width: 100%;
+        /* top: 10px; */
+        position: fixed;
+        padding-left: 15px;
+        padding-right: 15px;
+        z-index: 998;
+    }
+
+    .home-search-desktop {
+        /*background-color: white; */
+        /* border-radius: 10px; */
+        width: 100%;
+        /* top: 10px; */
+        position: absolute;
+        padding-left: 325px;
+        padding-right: 15px;
+        z-index: 998;
+    }
+
+    .home-search-mobile {
+        /*background-color: white; */
+        /* border-radius: 10px; */
+        width: 100%;
+        /* top: 10px; */
+        position: fixed;
+        padding-left: 15px;
+        padding-right: 15px;
+        z-index: 998;
+    }
+
+    .home-search-input {
+        padding-top: 50px;
+        border-radius: 10px;
+    }
+
+    .home-floating {
+        padding-top: 15px !important;
+        position: fixed;
+        width: 60px;
+        height: 60px;
+        bottom: 10px;
+        right: 10px;
+        background-color: white;
+        border-color: #8cc152;
+        color: #FC6E51;
+        border-radius: 50px;
+        text-align: center;
+        box-shadow: 2px 2px 3px #999;
+        z-index: 999;
+    }
+
+    .zoom-in-floating {
+        padding-top: 5px !important;
+        position: fixed;
+        width: 40px;
+        height: 40px;
+        bottom: 60px;
+        left: 9px;
+        background-color: white;
+        border-color: #8cc152;
+        color: #FC6E51;
+        border-radius: 50px;
+        text-align: center;
+        box-shadow: 2px 2px 3px #999;
+        z-index: 999;
+    }
+
+    .zoom-out-floating {
+        padding-top: 5px !important;
+        position: fixed;
+        width: 40px;
+        height: 40px;
+        bottom: 10px;
+        left: 10px;
+        background-color: white;
+        border-color: #8cc152;
+        color: #FC6E51;
+        border-radius: 50px;
+        text-align: center;
+        box-shadow: 2px 2px 3px #999;
+        z-index: 999;
+    }
+
+    .get-reset-screen-floating {
+        padding-top: 10px !important;
+        position: fixed;
+        width: 40px;
+        height: 40px;
+        bottom: 130px;
+        right: 20px;
+        background-color: white;
+        border-color: #8cc152;
+        color: #FC6E51;
+        border-radius: 50px;
+        text-align: center;
+        box-shadow: 2px 2px 3px #999;
+        z-index: 999;
+    }
+
+    .get-geolocation-floating {
+        padding-top: 10px !important;
+        position: fixed;
+        width: 40px;
+        height: 40px;
+        bottom: 80px;
+        right: 20px;
+        background-color: white;
+        border-color: #8cc152;
+        color: #FC6E51;
+        border-radius: 50px;
+        text-align: center;
+        box-shadow: 2px 2px 3px #999;
+        z-index: 999;
+    }
+
+    .change-map-language {
+        position: fixed;
+        width: 40px;
+        height: 40px;
+        bottom: 120px;
+        left: 9px;
+        background-color: #FC6E51;
+        border-color: #8cc152;
+        color: #FFF;
+        border-radius: 50px;
+        text-align: center;
+        box-shadow: 2px 2px 3px #999;
+        z-index: 999;
+    }
+
+    .cancel-search-floating {
+        padding-top: 5px !important;
+        position: fixed;
+        width: 40px;
+        height: 40px;
+        top: 50px;
+        right: 20px;
+        /* background-color: #FC6E51; */
+        /* border-color: #8cc152; */
+        color: #c5c5c5;
+        /* border-radius: 50px; */
+        text-align: center;
+        /* box-shadow: 2px 2px 3px #999; */
+        z-index: 999;
+    }
+
+    .map-stack-floating {
+        padding-top: 10px !important;
+        position: fixed;
+        width: 40px;
+        height: 40px;
+        top: 130px;
+        right: 20px;
+        background-color: white;
+        border-color: #8cc152;
+        color: #FC6E51;
+        border-radius: 50px;
+        text-align: center;
+        box-shadow: 2px 2px 3px #999;
+        z-index: 999;
+    }
+
+    .pulsating-circle-current {
+        width: 15px;
+        height: 15px;
+        background-color: #356fdc;
+        border-radius: 50%;
+        position: absolute;
+        left: 10px;
+    }
+
+    .pulsating-ringring-current {
+        border: 3px solid #356fdc;
+        -webkit-border-radius: 30px;
+        height: 25px;
+        width: 25px;
+        position: absolute;
+        left: 5px;
+        bottom: -20px;
+        -webkit-animation: pulsate 0.7s ease-out;
+        -webkit-animation-iteration-count: infinite;
+        opacity: 0.0;
+    }
+
+    @@-webkit-keyframes pulsate {
+        0% {
+            -webkit-transform: scale(0.1, 0.1);
+            opacity: 0.0;
+        }
+
+        50% {
+            opacity: 1.0;
+        }
+
+        100% {
+            -webkit-transform: scale(1.2, 1.2);
+            opacity: 0.0;
+        }
+    }
+
+    #icon-home-search {
+        position: absolute !important;
+        left: -20px !important;
+        line-height: 53px !important;
+        text-align: center !important;
+        width: 80px !important;
+        height: 80px !important;
+    }
+
+
+    .button-count-device {
+        position: relative;
+        border-radius: 30px;
+        border: 2px solid white;
+        padding: 4px 20px;
+        color: white;
+        background: rgb(255 151 0 / 73%);
+        box-shadow: 0 2px 10px rgba(0,0,0,.15);
+        cursor: pointer;
+        user-select: none;
+        transition: all .3s;
+    }
+
+    .button-count-device:hover {
+        transform: scale(1.03);
+        background: rgb(255 151 0);
+        box-shadow: 0 2px 20px rgba(0,0,0,.15);
+    }
+
+    .button-count-device:active {
+        transform: scale(.96);
+    }
+
+
+
+    .button-favorite-device-home {
+        position: relative;
+        border-radius: 30px;
+        border: 2px solid white;
+        padding: 4px 20px;
+        color: #898989;
+        background: rgb(255 255 255);
+        box-shadow: 0 2px 10px rgba(0,0,0,.15);
+        cursor: pointer;
+        user-select: none;
+        transition: all .3s;
+    }
+
+    .button-favorite-device-home:hover {
+        transform: scale(1.03);
+        background: rgb(255 151 0);
+        box-shadow: 0 2px 20px rgba(0,0,0,.15);
+    }
+
+    .button-favorite-device-home:active {
+        transform: scale(.96);
+    }
+
+
+</style>

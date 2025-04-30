@@ -1,0 +1,122 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'https' " />
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'http' " />
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageReference Include="System.Text.Json" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="7.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="WatchDog.NET" Version="1.4.10" />
+    <PackageReference Include="Hangfire.Core" Version="1.8.10" />
+    <PackageReference Include="Hangfire.AspNetCore" Version="1.8.10" />
+    <PackageReference Include="Hangfire.PostgreSql" Version="1.20.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Repositories\" />
+    <None Remove="Services\" />
+    <None Remove="Models\" />
+    <None Remove="Models\Constants\" />
+    <None Remove="Models\Customs\" />
+    <None Remove="Models\Filters\" />
+    <None Remove="Models\Reponse\" />
+    <None Remove="Extension\" />
+    <None Remove="Extension\Helper\" />
+    <None Remove="Extension\Validate\" />
+    <None Remove="Models\Pagination\" />
+    <None Remove="Repositories\SysUserRepositories\" />
+    <None Remove="Controllers\" />
+    <None Remove="Repositories\AuthorizationRepositories\" />
+    <None Remove="Repositories\AuthenticationRepositories\" />
+    <None Remove="Models\Filters\TrackCar\" />
+    <None Remove="Repositories\TcDevicesRepositories\" />
+    <None Remove="Repositories\TcPositionRepositories\" />
+    <None Remove="Extension\Mapping\" />
+    <None Remove="Extension\Mapping\TracCar\" />
+    <None Remove="Repositories\SysLogsRepositories\" />
+    <None Remove="Repositories\MasterCountryRepositories\" />
+    <None Remove="Repositories\MasterThaiDistrictsRepositories\" />
+    <None Remove="Repositories\MasterThaiGeographiesRepositories\" />
+    <None Remove="Repositories\MasterThaiProvincesRepositories\" />
+    <None Remove="Repositories\MasterThaiSubdistrictsRepositories\" />
+    <None Remove="Repositories\SysGroupRepositories\" />
+    <None Remove="Repositories\MasterDeviceRepositories\" />
+    <None Remove="Repositories\MasterDeviceStatusRepositories\" />
+    <None Remove="Repositories\MasterDeviceGroupRepositories\" />
+    <None Remove="Repositories\MasterDeviceCategoryRepositories\" />
+    <None Remove="Services\Extension\" />
+    <None Remove="Models\Caec\" />
+    <None Remove="Repositories\AutoInterfaceRepositories\" />
+    <None Remove="Repositories\MasterGpsProviderRepositories\" />
+    <None Remove="Models\Customs\MarsxTrack\" />
+    <None Remove="Services\TransformData\" />
+    <None Remove="Repositories\MasterGpsStatusRepositories\" />
+    <None Remove="Services\Extension\Longdo\" />
+    <None Remove="Models\Filters\LongdoMap\" />
+    <None Remove="Models\LongdoMap\" />
+    <None Remove="Services\Logging\" />
+    <None Remove="Repositories\SysLogsApiRepositories\" />
+    <None Remove="Repositories\SysDeviceFavoriteRepositories\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Repositories\" />
+    <Folder Include="Services\" />
+    <Folder Include="Models\" />
+    <Folder Include="Models\Constants\" />
+    <Folder Include="Models\Customs\" />
+    <Folder Include="Models\Filters\" />
+    <Folder Include="Models\Reponse\" />
+    <Folder Include="Extension\" />
+    <Folder Include="Extension\Helper\" />
+    <Folder Include="Extension\Validate\" />
+    <Folder Include="Models\Pagination\" />
+    <Folder Include="Repositories\SysUserRepositories\" />
+    <Folder Include="Controllers\" />
+    <Folder Include="Repositories\AuthorizationRepositories\" />
+    <Folder Include="Repositories\AuthenticationRepositories\" />
+    <Folder Include="Models\Filters\TrackCar\" />
+    <Folder Include="Repositories\TcDevicesRepositories\" />
+    <Folder Include="Repositories\TcPositionRepositories\" />
+    <Folder Include="Extension\Mapping\" />
+    <Folder Include="Extension\Mapping\TracCar\" />
+    <Folder Include="Repositories\SysLogsRepositories\" />
+    <Folder Include="Repositories\MasterCountryRepositories\" />
+    <Folder Include="Repositories\MasterThaiDistrictsRepositories\" />
+    <Folder Include="Repositories\MasterThaiGeographiesRepositories\" />
+    <Folder Include="Repositories\MasterThaiProvincesRepositories\" />
+    <Folder Include="Repositories\MasterThaiSubdistrictsRepositories\" />
+    <Folder Include="Repositories\SysGroupRepositories\" />
+    <Folder Include="Repositories\MasterDeviceRepositories\" />
+    <Folder Include="Repositories\MasterDeviceStatusRepositories\" />
+    <Folder Include="Repositories\MasterDeviceGroupRepositories\" />
+    <Folder Include="Repositories\MasterDeviceCategoryRepositories\" />
+    <Folder Include="Services\Extension\" />
+    <Folder Include="Models\Caec\" />
+    <Folder Include="Repositories\AutoInterfaceRepositories\" />
+    <Folder Include="Repositories\MasterGpsProviderRepositories\" />
+    <Folder Include="Models\Customs\MarsxTrack\" />
+    <Folder Include="Services\TransformData\" />
+    <Folder Include="Repositories\MasterGpsStatusRepositories\" />
+    <Folder Include="Services\Extension\Longdo\" />
+    <Folder Include="Models\Filters\LongdoMap\" />
+    <Folder Include="Models\LongdoMap\" />
+    <Folder Include="Services\Logging\" />
+    <Folder Include="Repositories\SysLogsApiRepositories\" />
+    <Folder Include="Repositories\SysDeviceFavoriteRepositories\" />
+  </ItemGroup>
+</Project>

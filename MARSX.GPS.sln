@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 25.0.1706.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MARSX.GPS.API", "MARSX.GPS.API\MARSX.GPS.API.csproj", "{84DB2F8F-306A-453F-9D13-D08663EB380F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MARSX.GPS.APPLICATION", "MARSX.GPS.APPLICATION\MARSX.GPS.APPLICATION.csproj", "{5D8ECB2D-A93A-4AEB-87B6-2361AF375856}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{84DB2F8F-306A-453F-9D13-D08663EB380F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84DB2F8F-306A-453F-9D13-D08663EB380F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84DB2F8F-306A-453F-9D13-D08663EB380F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84DB2F8F-306A-453F-9D13-D08663EB380F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D8ECB2D-A93A-4AEB-87B6-2361AF375856}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D8ECB2D-A93A-4AEB-87B6-2361AF375856}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D8ECB2D-A93A-4AEB-87B6-2361AF375856}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D8ECB2D-A93A-4AEB-87B6-2361AF375856}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6B7F939A-3320-4C30-A527-65B680FB0397}
+	EndGlobalSection
+EndGlobal

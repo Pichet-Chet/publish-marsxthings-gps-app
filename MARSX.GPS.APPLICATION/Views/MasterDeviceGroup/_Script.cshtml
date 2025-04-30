@@ -1,0 +1,234 @@
+﻿<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        Get();
+
+    });
+
+    function onFilter() {
+
+        var textCurrent = $('#txtSearch').val();
+
+        var value = textCurrent.toLowerCase();
+
+        $("#renderDataList #record").filter(function () {
+
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+
+        });
+    }
+
+    function Get() {
+
+        var filter = new Object();
+
+        filter.isAll = true;
+
+
+        $.ajax({
+            type: "Get",
+            contentType: "charset=utf-8",
+            data: filter,
+            url: '@Url.Action("Get", "MasterDeviceGroup")',
+            success: function (resp) {
+
+                if (resp.effectRow > 0) {
+
+                    $('#renderDataList').html("");
+
+                    var appendHtml = '';
+
+                    var fragment = document.createDocumentFragment();
+
+                    resp.data.forEach((item) => {
+
+                        var isActive = verifyIsActive(item);
+
+                        appendHtml = `<div id="record"> 
+                                            <div onclick="update(${item.id})" class="list-group-item" role="button">
+                                                ${isActive}
+                                                <div class="ps-1">
+                                                    <strong class="font-600">${item.nameEn}</strong>
+                                                    <span>${item.description}</span>
+                                                </div>
+                                                <i class="bi bi-chevron-right"></i>
+                                            </div>
+                                        </div>`;
+
+                        var temp = document.createElement('template');
+                        temp.innerHTML = appendHtml;
+                        fragment.appendChild(temp.content.firstChild);
+
+                    })
+
+                    $('#renderDataList').append(fragment);
+                }
+                else {
+
+                }
+
+            }
+        });
+    }
+
+    $(function () {
+
+        $("#formSubmit").on("submit", function () {
+
+            var form = $(this)[0];
+
+            if (form.checkValidity() === false) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            else {
+
+                var param = setParameter();
+
+                var urlAction = verifyUrlAction();
+
+                $.ajax({
+                    url: urlAction,
+                    data: param,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+
+                        if (data.status == true) {
+
+                            clearValue();
+
+                            $('#canvas-form').offcanvas('hide');
+
+                            toastSuccess(data.type, data.message);
+
+                            Get();
+
+                        }
+                        else {
+
+                            $('#canvas-form').offcanvas('hide');
+
+                            toastError(data.type, data.message);
+
+                        }
+
+                    },
+                    fail: function () {
+                        toastError("Internal Server" , "Please contact administrator.")
+                    }
+                });
+
+            }
+
+        });
+
+    });
+
+
+    function setParameter() {
+
+        var data = new Object();
+
+        data.id = $('#inputId').val();
+        data.nameEn = $('#inputNameEn').val();
+        data.nameTh = $('#inputNameTh').val();
+        data.description = $('#inputDescription').val();
+        data.isActive = $("#switch-is-active").is(":checked");
+
+        return data;
+
+    }
+
+    function closeOffCanvas() {
+
+        clearValue();
+
+        $('#canvas-form').offcanvas('hide');
+
+    }
+
+    function clearValue() {
+
+        $('#inputId').val("");
+        $('#inputNameEn').val("");
+        $('#inputNameTh').val("");
+        $('#inputDescription').val("");
+
+    }
+
+
+    function update(id) {
+
+        $('#canvas-form').offcanvas('show');
+
+        setValueUpdate(id);
+
+    }
+
+
+    function setValueUpdate(id) {
+
+        $.ajax({
+            type: "Get",
+            contentType: "charset=utf-8",
+            url: '@Url.Action("Detail", "MasterDeviceGroup")?id=' + id,
+            success: function (resp) {
+
+                if (resp.effectRow > 0) {
+
+                    var data = resp.data;
+
+                    $('#inputId').val(data.id);
+                    $('#inputNameEn').val(data.nameEn);
+                    $('#inputNameTh').val(data.nameTh);
+                    $('#inputDescription').val(data.description);
+                    $("#switch-is-active").prop('checked', data.isActive);
+
+                }
+                else {
+
+                }
+
+            }
+        });
+
+    }
+
+
+    function verifyIsActive(param) {
+
+        var result = '';
+
+        if (param.isActive == true) {
+            result = `<i class="ti ti-point-filled text-success font-25"></i>`;
+        }
+        else {
+            result = `<i class="ti ti-point-filled text-danger font-25"></i>`;
+        }
+
+        return result;
+
+    }
+
+    function verifyUrlAction() {
+
+        var result = '';
+
+        var currentId = $('#inputId').val();
+
+        if (currentId == "") {
+
+            result = '@Url.Action("Create", "MasterDeviceGroup")';
+
+        }
+        else {
+            result = '@Url.Action("Update", "MasterDeviceGroup")';
+        }
+
+        return result;
+
+    }
+
+</script>
